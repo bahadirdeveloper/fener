@@ -15,6 +15,7 @@ export default function Map() {
   const [selected, setSelected] = useState(null)
   const [userLoc, setUserLoc] = useState(null)
   const [locError, setLocError] = useState('')
+  const [filters, setFilters] = useState({ shelters: true, hazards: true, reports: true, user: true })
   const userPoints = useLiveQuery(() => db.meetingPoints.toArray(), []) ?? []
   const reports = useLiveQuery(() => db.reports.toArray(), []) ?? []
 
@@ -300,6 +301,22 @@ export default function Map() {
     }
   }, [userLoc, selected])
 
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !map.isStyleLoaded()) return
+    const groups = {
+      shelters: ['shelters-halo', 'shelters-dot', 'shelters-label'],
+      hazards: ['hazards-fill', 'hazards-line'],
+      reports: ['reports-dot', 'reports-label'],
+      user: ['user-points-dot', 'user-points-label']
+    }
+    Object.entries(groups).forEach(([k, ids]) => {
+      ids.forEach((id) => {
+        if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', filters[k] ? 'visible' : 'none')
+      })
+    })
+  }, [filters])
+
   async function locate() {
     setLocError('')
     try {
@@ -340,6 +357,23 @@ export default function Map() {
         >
           📍 Konumum
         </button>
+      </div>
+
+      <div className="flex gap-1 flex-wrap text-xs">
+        {[
+          ['shelters', '📍 Toplanma'],
+          ['hazards', '⚠️ Tehlike'],
+          ['reports', '🚩 Rapor'],
+          ['user', '⭐ Benim']
+        ].map(([k, l]) => (
+          <button
+            key={k}
+            onClick={() => setFilters((f) => ({ ...f, [k]: !f[k] }))}
+            className={`px-2 py-1 rounded-lg border ${filters[k] ? 'bg-[--color-fener-gold] text-[--color-fener-bg] border-[--color-fener-gold]' : 'bg-[--color-fener-card] border-[--color-fener-border] opacity-60'}`}
+          >
+            {l}
+          </button>
+        ))}
       </div>
 
       <div

@@ -127,6 +127,8 @@ export default function Scan() {
           </div>
           {result.parsed?.app === 'fener' ? (
             <CardDisplay data={result.parsed} />
+          ) : result.parsed?.v === 1 && result.parsed?.body && result.parsed?.sig ? (
+            <EnvelopeDisplay env={result.parsed} />
           ) : (
             <pre className="whitespace-pre-wrap break-all text-xs font-mono">{result.raw}</pre>
           )}
@@ -157,6 +159,33 @@ function CardDisplay({ data }) {
     </div>
   )
 }
+function EnvelopeDisplay({ env }) {
+  const [verified, setVerified] = useState(null)
+  useEffect(() => {
+    (async () => {
+      try {
+        const { verify } = await import('../lib/crypto.js')
+        setVerified(await verify(env.pub, env.body, env.sig, env.alg))
+      } catch { setVerified(false) }
+    })()
+  }, [env])
+  let body = env.body
+  try { body = JSON.parse(env.body) } catch { /* keep raw */ }
+  return (
+    <div className="flex flex-col gap-2 text-sm">
+      <div className={verified ? 'text-[--color-fener-ok] font-semibold' : verified === false ? 'text-[--color-fener-help] font-semibold' : 'opacity-70'}>
+        {verified == null ? 'İmza doğrulanıyor…' : verified ? '✓ İmza doğrulandı' : '✗ İmza geçersiz'}
+      </div>
+      <div className="text-xs font-mono break-all opacity-70">
+        from {env.from} · {env.alg}
+      </div>
+      <pre className="whitespace-pre-wrap break-words text-xs font-sans bg-[--color-fener-bg] p-2 rounded">
+        {typeof body === 'object' ? JSON.stringify(body, null, 2) : body}
+      </pre>
+    </div>
+  )
+}
+
 function Row({ label, value }) {
   if (!value) return null
   return (

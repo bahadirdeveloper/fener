@@ -72,8 +72,64 @@ export const SHELTERS = {
         notes: 'Kampüs açık alanı.'
       },
       geometry: { type: 'Point', coordinates: [33.9172, 36.3646] }
+    },
+    {
+      type: 'Feature',
+      properties: {
+        id: 'cumhuriyet-ortaokulu',
+        name: 'Cumhuriyet Ortaokulu Bahçesi',
+        kind: 'toplanma',
+        capacity: 700,
+        notes: 'Merkez mahalle okulu.'
+      },
+      geometry: { type: 'Point', coordinates: [33.9364, 36.3752] }
+    },
+    {
+      type: 'Feature',
+      properties: {
+        id: 'atayurt-sahil',
+        name: 'Atayurt Sahil Açık Alan',
+        kind: 'toplanma',
+        capacity: 900,
+        notes: 'Doğu sahil beldesi.'
+      },
+      geometry: { type: 'Point', coordinates: [33.9810, 36.3232] }
+    },
+    {
+      type: 'Feature',
+      properties: {
+        id: 'akdere-meydan',
+        name: 'Akdere Köyü Meydanı',
+        kind: 'toplanma',
+        capacity: 400,
+        notes: 'Dağ köyü açık alanı.'
+      },
+      geometry: { type: 'Point', coordinates: [33.9833, 36.4100] }
+    },
+    {
+      type: 'Feature',
+      properties: {
+        id: 'yesilovacik-liman',
+        name: 'Yeşilovacık Limanı Açık Alanı',
+        kind: 'toplanma',
+        capacity: 600,
+        notes: 'Batı sahil limanı.'
+      },
+      geometry: { type: 'Point', coordinates: [33.6455, 36.1775] }
+    },
+    {
+      type: 'Feature',
+      properties: {
+        id: 'gulnar-meydan',
+        name: 'Gülnar Köy Meydanı',
+        kind: 'toplanma',
+        capacity: 500,
+        notes: 'Güneybatı köy meydanı.'
+      },
+      geometry: { type: 'Point', coordinates: [33.4028, 36.6850] }
     }
-  ]
+  ],
+  note: 'Saha doğrulaması bekliyor. Gerçek AFAD/belediye listesi Faz 1.2\'de gelecek.'
 }
 
 export function haversineKm(a, b) {

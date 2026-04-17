@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../lib/db.js'
+import { db, pushOutbox } from '../lib/db.js'
 
 function fmt(ms) {
   const s = Math.floor(ms / 1000)
@@ -61,6 +61,17 @@ export default function Voice() {
     await db.voiceNotes.delete(id)
   }
 
+  async function queue(n) {
+    await pushOutbox({
+      type: 'voice',
+      text: `Ses notu · ${Math.round((n.duration || 0) / 1000)} sn`,
+      voiceNoteId: n.id,
+      size: n.size,
+      mime: n.mime
+    })
+    alert('Gidene eklendi. BLE/LoRa bağlantısında gönderilecek.')
+  }
+
   async function download(n) {
     const url = URL.createObjectURL(n.blob)
     const a = document.createElement('a')
@@ -108,8 +119,11 @@ export default function Voice() {
             </div>
             <audio controls src={URL.createObjectURL(n.blob)} className="w-full" />
             <div className="flex gap-2">
-              <button onClick={() => download(n)} className="flex-1 text-sm py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border]">
-                ⬇ İndir
+              <button onClick={() => queue(n)} className="flex-1 text-sm py-2 rounded-lg bg-[--color-fener-gold] text-[--color-fener-bg] font-semibold">
+                📤 Gidene ekle
+              </button>
+              <button onClick={() => download(n)} className="text-sm py-2 px-3 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border]">
+                ⬇
               </button>
               <button onClick={() => remove(n.id)} className="text-sm py-2 px-3 rounded-lg text-[--color-fener-help]">
                 Sil
