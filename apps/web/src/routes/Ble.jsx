@@ -13,6 +13,7 @@ export default function Ble() {
   const [conn, setConn] = useState(null)
   const [messages, setMessages] = useState([])
   const [error, setError] = useState('')
+  const [chatInput, setChatInput] = useState('')
   const knownPeers = useLiveQuery(() => db.nodes.toArray(), []) ?? []
 
   useEffect(() => {
@@ -65,6 +66,22 @@ export default function Ble() {
     await send(conn.tx, env)
   }
 
+  async function sendChat() {
+    const txt = chatInput.trim()
+    if (!txt || !conn?.tx) return
+    const env = await signMessage({ kind: 'chat', text: txt, t: Date.now() })
+    await send(conn.tx, env)
+    setMessages((m) => [{ ...env, verified: true, outgoing: true }, ...m].slice(0, 50))
+    setChatInput('')
+  }
+
+  async function sendQuickOk() {
+    if (!conn?.tx) return
+    const env = await signMessage({ kind: 'ok', text: 'Ben iyiyim', t: Date.now() })
+    await send(conn.tx, env)
+    setMessages((m) => [{ ...env, verified: true, outgoing: true }, ...m].slice(0, 50))
+  }
+
   if (!supported) {
     return (
       <div className="flex flex-col gap-3">
@@ -102,9 +119,28 @@ export default function Ble() {
       )}
 
       {conn && (
-        <button onClick={ping} className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] font-semibold">
-          📤 İmzalı ping gönder
-        </button>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <button onClick={ping} className="flex-1 rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm font-semibold">
+              📤 Ping
+            </button>
+            <button onClick={sendQuickOk} className="flex-1 rounded-xl p-3 bg-[--color-fener-ok] text-white text-sm font-semibold">
+              ✅ Ben iyiyim
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <input
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && sendChat()}
+              placeholder="Mesaj..."
+              className="flex-1 rounded-xl px-3 py-2 bg-[--color-fener-card] border border-[--color-fener-border]"
+            />
+            <button onClick={sendChat} className="px-4 rounded-xl bg-[--color-fener-gold] text-[--color-fener-bg] font-bold">
+              Gönder
+            </button>
+          </div>
+        </div>
       )}
 
       {error && <div className="text-sm text-[--color-fener-help]">{error}</div>}
@@ -130,11 +166,21 @@ export default function Ble() {
             <li className="text-xs opacity-50 text-center py-4">Henüz yok</li>
           )}
           {messages.map((m, i) => (
-            <li key={i} className="rounded-lg p-2 bg-[--color-fener-card] border border-[--color-fener-border] text-xs font-mono break-all">
-              <span className={m.verified ? 'text-[--color-fener-ok]' : m.verified === false ? 'text-[--color-fener-help]' : 'opacity-60'}>
-                {m.verified ? '✓ doğrulandı' : m.verified === false ? '✗ imza geçersiz' : '? imzasız'}
-              </span>{' '}
-              {JSON.stringify(m).slice(0, 200)}
+            <li key={i} className={`rounded-lg p-2 text-xs ${m.outgoing ? 'bg-[--color-fener-ok]/20 border border-[--color-fener-ok]/40 ml-6' : 'bg-[--color-fener-card] border border-[--color-fener-border] mr-6'}`}>
+              <div className="flex items-center justify-between">
+                <span className={m.verified ? 'text-[--color-fener-ok]' : m.verified === false ? 'text-[--color-fener-help]' : 'opacity-60'}>
+                  {m.outgoing ? '→' : '←'} {m.verified ? '✓' : m.verified === false ? '✗' : '?'} {m.from?.slice(0, 12) || 'peer'}
+                </span>
+                <span className="opacity-60">{new Date(m.ts || Date.now()).toLocaleTimeString('tr-TR')}</span>
+              </div>
+              <div className="mt-1 font-sans break-words">
+                {(() => {
+                  try {
+                    const b = typeof m.body === 'string' ? JSON.parse(m.body) : m.body
+                    return b?.text || b?.kind || JSON.stringify(b).slice(0, 120)
+                  } catch { return m.body || JSON.stringify(m).slice(0, 120) }
+                })()}
+              </div>
             </li>
           ))}
         </ul>
