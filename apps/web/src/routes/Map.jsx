@@ -4,6 +4,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { osmRasterStyle } from '../lib/mapStyle.js'
 import { SHELTERS, SILIFKE_CENTER, nearestShelter, haversineKm } from '../data/shelters.js'
+import { HAZARDS } from '../data/hazards.js'
 import { getPosition } from '../lib/location.js'
 import { db } from '../lib/db.js'
 
@@ -32,6 +33,63 @@ export default function Map() {
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 
     map.on('load', () => {
+      map.addSource('guide-line', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
+      map.addLayer({
+        id: 'guide-line',
+        type: 'line',
+        source: 'guide-line',
+        paint: {
+          'line-color': '#F5D78E',
+          'line-width': 4,
+          'line-dasharray': [1, 2]
+        }
+      })
+
+      map.addSource('hazards', { type: 'geojson', data: HAZARDS })
+      map.addLayer({
+        id: 'hazards-fill',
+        type: 'fill',
+        source: 'hazards',
+        paint: {
+          'fill-color': [
+            'match', ['get', 'kind'],
+            'flood', '#2A8FD6',
+            'tsunami', '#4FB3D9',
+            'landslide', '#D6892A',
+            'fire', '#D6452A',
+            '#888'
+          ],
+          'fill-opacity': 0.18
+        }
+      })
+      map.addLayer({
+        id: 'hazards-line',
+        type: 'line',
+        source: 'hazards',
+        paint: {
+          'line-color': [
+            'match', ['get', 'kind'],
+            'flood', '#2A8FD6',
+            'tsunami', '#4FB3D9',
+            'landslide', '#D6892A',
+            'fire', '#D6452A',
+            '#888'
+          ],
+          'line-width': 1.5,
+          'line-dasharray': [2, 2]
+        }
+      })
+      map.on('click', 'hazards-fill', (e) => {
+        const f = e.features?.[0]
+        if (!f) return
+        setSelected({
+          name: f.properties.name,
+          capacity: '-',
+          notes: `Risk: ${f.properties.severity} · ${f.properties.kind}`,
+          coordinates: [e.lngLat.lng, e.lngLat.lat]
+        })
+      })
+
       map.addSource('shelters', { type: 'geojson', data: SHELTERS })
       map.addSource('user-points', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
       map.addSource('reports', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
@@ -220,6 +278,28 @@ export default function Map() {
     })
   }, [reports])
 
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !map.isStyleLoaded()) return
+    const src = map.getSource('guide-line')
+    if (!src) return
+    if (userLoc && selected?.coordinates) {
+      src.setData({
+        type: 'FeatureCollection',
+        features: [{
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [[userLoc.lng, userLoc.lat], selected.coordinates]
+          },
+          properties: {}
+        }]
+      })
+    } else {
+      src.setData({ type: 'FeatureCollection', features: [] })
+    }
+  }, [userLoc, selected])
+
   async function locate() {
     setLocError('')
     try {
@@ -283,6 +363,8 @@ export default function Map() {
               {selected.distanceKm != null && (
                 <div className="text-xs opacity-90 mt-1">
                   Uzaklık: <strong>{selected.distanceKm.toFixed(2)} km</strong>
+                  {' · '}
+                  Yürüme: <strong>~{Math.max(1, Math.round(selected.distanceKm * 12))} dk</strong>
                 </div>
               )}
             </div>

@@ -15,6 +15,7 @@ import Outbox from './routes/Outbox.jsx'
 import Report from './routes/Report.jsx'
 import Voice from './routes/Voice.jsx'
 import SilentSos from './routes/SilentSos.jsx'
+import Alphabet from './routes/Alphabet.jsx'
 const Ble = lazy(() => import('./routes/Ble.jsx'))
 import Layout from './components/Layout.jsx'
 import Onboarding from './components/Onboarding.jsx'
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="/rapor" element={<Report />} />
         <Route path="/ses" element={<Voice />} />
         <Route path="/sessiz-sos" element={<SilentSos />} />
+        <Route path="/alfabe" element={<Alphabet />} />
         <Route path="/ble" element={<Suspense fallback={<Loading />}><Ble /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

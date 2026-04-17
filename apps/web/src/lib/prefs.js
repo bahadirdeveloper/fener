@@ -1,7 +1,22 @@
 const KEYS = {
   onboarded: 'fener.onboarded.v1',
   installDismissed: 'fener.installDismissed.v1',
-  locationAsked: 'fener.locationAsked.v1'
+  locationAsked: 'fener.locationAsked.v1',
+  energySave: 'fener.energySave.v1'
+}
+
+export function isEnergySave() {
+  try { return localStorage.getItem(KEYS.energySave) === '1' } catch { return false }
+}
+export function setEnergySave(v) {
+  try { localStorage.setItem(KEYS.energySave, v ? '1' : '0') } catch { /* noop */ }
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.toggle('energy-save', !!v)
+  }
+}
+export function applyEnergySave() {
+  if (typeof document === 'undefined') return
+  document.documentElement.classList.toggle('energy-save', isEnergySave())
 }
 
 export function getFlag(k) {
@@ -28,5 +43,6 @@ export function isStandalone() {
 }
 
 export function haptic(ms = 15) {
+  if (isEnergySave()) return
   try { navigator.vibrate?.(ms) } catch { /* noop */ }
 }

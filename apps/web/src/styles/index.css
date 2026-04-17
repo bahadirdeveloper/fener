@@ -49,6 +49,17 @@
   html.hc .big-btn {
     border: 3px solid white;
   }
+  html.energy-save *,
+  html.energy-save *::before,
+  html.energy-save *::after {
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+  }
+  html.energy-save {
+    --color-fener-bg: #000000;
+    --color-fener-card: #080808;
+  }
 }
 
 @layer components {

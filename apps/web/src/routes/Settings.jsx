@@ -5,6 +5,7 @@ import { ensureIdentity, getIdentity, forgetIdentity } from '../lib/crypto.js'
 import { db } from '../lib/db.js'
 import { exportAll, downloadBackup, importBackup } from '../lib/backup.js'
 import { ensureNotifyPerm, hasNotify } from '../lib/notify.js'
+import { isEnergySave, setEnergySave } from '../lib/prefs.js'
 import InstallButton from '../components/InstallButton.jsx'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n/index.js'
@@ -19,6 +20,7 @@ export default function Settings() {
   const [notifyPerm, setNotifyPerm] = useState(
     hasNotify() ? Notification.permission : 'unsupported'
   )
+  const [esave, setEsave] = useState(isEnergySave())
 
   useEffect(() => { (async () => setIdentity(await getIdentity()))() }, [])
 
@@ -100,6 +102,20 @@ export default function Settings() {
         </div>
       </Section>
 
+      <Section title="Enerji tasarrufu">
+        <label className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[--color-fener-card] border border-[--color-fener-border]">
+          <span className="text-sm">
+            Animasyonları ve titreşimi kapat, daha koyu arka plan. Pil uzar.
+          </span>
+          <input
+            type="checkbox"
+            checked={esave}
+            onChange={(e) => { setEnergySave(e.target.checked); setEsave(e.target.checked) }}
+            className="w-6 h-6"
+          />
+        </label>
+      </Section>
+
       <Section title="Bildirimler">
         <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-sm flex flex-col gap-2">
           <div className="text-xs opacity-70">
@@ -123,6 +139,7 @@ export default function Settings() {
             Silifke bölgesi tile'larını arka planda indir. Afette harita açılmasa
             bile ekranda kalır. (~{estimatedSizeMB().toFixed(1)} MB, OSM raster)
           </div>
+          <StorageInfo needMB={estimatedSizeMB()} />
           {prefetch?.running && (
             <div>
               <div className="flex justify-between text-xs mb-1">
@@ -228,6 +245,31 @@ export default function Settings() {
           {t('footer') /* noop i18n guard */}
         </div>
       </Section>
+    </div>
+  )
+}
+
+function StorageInfo({ needMB }) {
+  const [info, setInfo] = useState(null)
+  useEffect(() => {
+    (async () => {
+      if (!navigator.storage?.estimate) return
+      try {
+        const e = await navigator.storage.estimate()
+        setInfo({
+          usedMB: (e.usage || 0) / 1048576,
+          quotaMB: (e.quota || 0) / 1048576
+        })
+      } catch { /* noop */ }
+    })()
+  }, [])
+  if (!info) return null
+  const free = info.quotaMB - info.usedMB
+  const tight = free < needMB * 1.5
+  return (
+    <div className={`text-xs ${tight ? 'text-[--color-fener-help]' : 'opacity-70'}`}>
+      Depolama: {info.usedMB.toFixed(1)} / {info.quotaMB.toFixed(0)} MB
+      {tight && ' · yer yetersiz olabilir'}
     </div>
   )
 }

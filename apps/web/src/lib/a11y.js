@@ -38,4 +38,5 @@ export function applyContrast(on = getContrast()) {
 export function applyAll() {
   applyScale()
   applyContrast()
+  import('./prefs.js').then((m) => m.applyEnergySave?.())
 }
