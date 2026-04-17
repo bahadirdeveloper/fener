@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { haptic } from '../lib/prefs.js'
 
 export default function Home() {
   return (
@@ -8,12 +9,12 @@ export default function Home() {
         <p className="text-sm opacity-70 mt-1">İnternet olmasa da çalışır.</p>
       </div>
 
-      <Link to="/durum?t=ok" className="big-btn big-btn-ok" aria-label="Ben iyiyim">
+      <Link to="/durum?t=ok" onClick={() => haptic(20)} className="big-btn big-btn-ok" aria-label="Ben iyiyim">
         <span className="text-5xl" aria-hidden>👋</span>
         <span>BEN İYİYİM</span>
       </Link>
 
-      <Link to="/durum?t=help" className="big-btn big-btn-help" aria-label="Yardım lazım">
+      <Link to="/durum?t=help" onClick={() => haptic([30, 40, 30])} className="big-btn big-btn-help" aria-label="Yardım lazım">
         <span className="text-5xl" aria-hidden>🆘</span>
         <span>YARDIM LAZIM</span>
       </Link>
