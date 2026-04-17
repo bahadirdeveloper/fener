@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getPosition } from '../lib/location.js'
 import { nearestShelter, haversineKm } from '../data/shelters.js'
 
@@ -15,6 +16,7 @@ function bearing(from, to) {
 }
 
 export default function Compass() {
+  const { t } = useTranslation()
   const [pos, setPos] = useState(null)
   const [target, setTarget] = useState(null)
   const [heading, setHeading] = useState(null)
@@ -61,7 +63,7 @@ export default function Compass() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Pusula</h2>
+      <h2 className="text-2xl font-bold">{t('page.compass')}</h2>
       {permErr && <div className="text-sm text-[--color-fener-help]">{permErr}</div>}
 
       {target && (

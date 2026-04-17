@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, pushOutbox } from '../lib/db.js'
 
@@ -8,6 +9,7 @@ function fmt(ms) {
 }
 
 export default function Voice() {
+  const { t } = useTranslation()
   const notes = useLiveQuery(() => db.voiceNotes.orderBy('createdAt').reverse().toArray(), []) ?? []
   const [recording, setRecording] = useState(false)
   const [err, setErr] = useState('')
@@ -83,7 +85,7 @@ export default function Voice() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Ses mesajı</h2>
+      <h2 className="text-2xl font-bold">{t('page.voice')}</h2>
       <p className="text-sm opacity-70">
         Konuşamadığında ya da yazı yazamadığında sesini kaydet. Cihazında kalır.
       </p>

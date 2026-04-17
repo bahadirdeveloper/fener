@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useTranslation } from 'react-i18next'
 import { db } from '../lib/db.js'
 
 const STATES = [
@@ -17,6 +18,7 @@ function fmtAgo(ts) {
 }
 
 export default function FamilyStatus() {
+  const { t } = useTranslation()
   const family = useLiveQuery(() => db.family.toArray(), []) ?? []
 
   async function setStatus(id, s) {
@@ -30,7 +32,7 @@ export default function FamilyStatus() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Aile durumu</h2>
+      <h2 className="text-2xl font-bold">{t('page.familyStatus')}</h2>
       <p className="text-sm opacity-70">
         Herkesle iletişim kurduğunda durumlarını işaretle. WhatsApp veya telefonla doğrula.
       </p>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, pushOutbox } from '../lib/db.js'
 import { getPosition } from '../lib/location.js'
@@ -15,6 +16,7 @@ const KINDS = [
 ]
 
 export default function Report() {
+  const { t } = useTranslation()
   const nav = useNavigate()
   const [kind, setKind] = useState('damage')
   const [note, setNote] = useState('')
@@ -49,7 +51,7 @@ export default function Report() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Saha raporu</h2>
+      <h2 className="text-2xl font-bold">{t('page.report')}</h2>
       <p className="text-sm opacity-70">
         Konumunu ve durumu kaydet. Harita'da pin olarak görünür.
       </p>

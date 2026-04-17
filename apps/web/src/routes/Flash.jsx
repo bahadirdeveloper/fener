@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
 
 // Ekran strobe Mors SOS. Gece 400-500 m mesafeden görülebilir.
@@ -11,6 +12,7 @@ const PATTERN = [
 ]
 
 export default function Flash() {
+  const { t } = useTranslation()
   const [on, setOn] = useState(false)
   const [active, setActive] = useState(false)
   const timers = useRef([])
@@ -58,7 +60,7 @@ export default function Flash() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Işık SOS</h2>
+      <h2 className="text-2xl font-bold">{t('page.flash')}</h2>
       <p className="text-sm opacity-80">
         Ekran Mors alfabesinde SOS yanıp söner. Karanlıkta arama kurtarma için yardımcı olur.
       </p>

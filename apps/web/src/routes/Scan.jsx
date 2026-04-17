@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function Scan() {
+  const { t } = useTranslation()
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
@@ -89,7 +91,7 @@ export default function Scan() {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-2xl font-bold">QR Oku</h2>
+      <h2 className="text-2xl font-bold">{t('page.scan')}</h2>
       <p className="text-sm opacity-70">
         Başka bir Fener kullanıcısının acil bilgi kartını oku.
       </p>

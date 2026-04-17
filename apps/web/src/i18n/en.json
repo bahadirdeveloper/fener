@@ -7,15 +7,38 @@
   "home": {
     "imOk": "I'M OK",
     "needHelp": "NEED HELP",
+    "needHelpHint": "hold → auto SOS",
     "card": "MY EMERGENCY CARD",
     "map": "Map",
     "family": "Family",
+    "report": "Report",
+    "guide": "Guide",
+    "compass": "Compass",
+    "firstAid": "First aid",
     "whistle": "Whistle",
-    "guide": "Guide"
+    "silentSos": "Silent SOS",
+    "flash": "Light SOS",
+    "voice": "Voice",
+    "scan": "Scan",
+    "alphabet": "Alphabet",
+    "points": "Points",
+    "outbox": "Outbox",
+    "near": "Nearby"
   },
   "status": {
     "online": "Online",
     "offline": "Offline"
+  },
+  "page": {
+    "report": "Field report",
+    "familyStatus": "Family status",
+    "voice": "Voice message",
+    "silentSos": "Silent SOS",
+    "flash": "Light SOS",
+    "firstAid": "First aid",
+    "compass": "Compass",
+    "alphabet": "Radio alphabet",
+    "scan": "Scan QR"
   },
   "footer": "Fener · Silifke Tech Community · Apache-2.0"
 }

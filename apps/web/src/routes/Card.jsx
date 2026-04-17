@@ -33,8 +33,11 @@ export default function Card() {
     setSaved(false)
   }
 
+  const phoneOk = !form.emergencyPhone || /^[+0-9 ()-]{7,}$/.test(form.emergencyPhone.trim())
+
   async function onSubmit(e) {
     e.preventDefault()
+    if (!phoneOk) return
     await saveProfile(form)
     setSaved(true)
   }
@@ -84,7 +87,8 @@ export default function Card() {
           <input className="inp" value={form.emergencyContact} onChange={(e) => set('emergencyContact', e.target.value)} />
         </Field>
         <Field label="Telefon">
-          <input type="tel" inputMode="tel" className="inp" value={form.emergencyPhone} onChange={(e) => set('emergencyPhone', e.target.value)} />
+          <input type="tel" inputMode="tel" className="inp" value={form.emergencyPhone} onChange={(e) => set('emergencyPhone', e.target.value)} aria-invalid={!phoneOk} />
+          {!phoneOk && <span className="text-[10px] text-[--color-fener-help]">Geçersiz telefon</span>}
         </Field>
       </div>
 

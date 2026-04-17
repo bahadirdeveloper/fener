@@ -7,15 +7,38 @@
   "home": {
     "imOk": "BEN İYİYİM",
     "needHelp": "YARDIM LAZIM",
+    "needHelpHint": "basılı tut → otomatik SOS",
     "card": "ACİL BİLGİLERİM",
     "map": "Harita",
     "family": "Aile",
+    "report": "Rapor",
+    "guide": "Rehber",
+    "compass": "Pusula",
+    "firstAid": "İlk yardım",
     "whistle": "Düdük",
-    "guide": "Rehber"
+    "silentSos": "Sessiz SOS",
+    "flash": "Işık SOS",
+    "voice": "Ses",
+    "scan": "Oku",
+    "alphabet": "Alfabe",
+    "points": "Noktalar",
+    "outbox": "Giden",
+    "near": "Yakın"
   },
   "status": {
     "online": "Çevrimiçi",
     "offline": "Çevrimdışı"
+  },
+  "page": {
+    "report": "Saha raporu",
+    "familyStatus": "Aile durumu",
+    "voice": "Ses mesajı",
+    "silentSos": "Sessiz SOS",
+    "flash": "Işık SOS",
+    "firstAid": "İlk yardım",
+    "compass": "Pusula",
+    "alphabet": "Telsiz alfabesi",
+    "scan": "QR Oku"
   },
   "footer": "Fener · Silifke Teknoloji Topluluğu · Apache-2.0"
 }

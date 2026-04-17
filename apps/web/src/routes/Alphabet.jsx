@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // Türk telsiz alfabesi (TRT/TSK geleneği).
 const TR_MAP = {
@@ -13,6 +14,7 @@ const TR_MAP = {
 }
 
 export default function Alphabet() {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
   const spelled = useMemo(() => {
     return Array.from(input.toLocaleLowerCase('tr-TR')).map((ch) => {
@@ -35,7 +37,7 @@ export default function Alphabet() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Telsiz Alfabesi</h2>
+      <h2 className="text-2xl font-bold">{t('page.alphabet')}</h2>
       <p className="text-sm opacity-70">
         İsim ya da adres hecele. Telefonla diktiğinde karışmaz.
       </p>

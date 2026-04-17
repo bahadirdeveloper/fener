@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const CARDS = [
   {
@@ -62,11 +63,12 @@ const CARDS = [
 ]
 
 export default function FirstAid() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(null)
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-2xl font-bold">İlk Yardım</h2>
+      <h2 className="text-2xl font-bold">{t('page.firstAid')}</h2>
       <p className="text-sm opacity-70">
         Kısa talimatlar. Eğitim değil — ama hiçbir şey yapmamaktan iyidir.
       </p>

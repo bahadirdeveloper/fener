@@ -1,11 +1,13 @@
 import { useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { haptic } from '../lib/prefs.js'
 import QuickDial from '../components/QuickDial.jsx'
 import { startBeacon } from '../lib/beacon.js'
 
 export default function Home() {
   const nav = useNavigate()
+  const { t } = useTranslation()
   const pressTimer = useRef(null)
   const longFired = useRef(false)
 
@@ -29,13 +31,13 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-4 flex-1">
       <div className="text-center pt-2 pb-4">
-        <h1 className="text-3xl font-bold">Silifke Acil İletişim</h1>
-        <p className="text-sm opacity-70 mt-1">İnternet olmasa da çalışır.</p>
+        <h1 className="text-3xl font-bold">{t('app.tagline')}</h1>
+        <p className="text-sm opacity-70 mt-1">{t('app.subline')}</p>
       </div>
 
-      <Link to="/durum?t=ok" onClick={() => haptic(20)} className="big-btn big-btn-ok" aria-label="Ben iyiyim">
+      <Link to="/durum?t=ok" onClick={() => haptic(20)} className="big-btn big-btn-ok" aria-label={t('home.imOk')}>
         <span className="text-5xl" aria-hidden>👋</span>
-        <span>BEN İYİYİM</span>
+        <span>{t('home.imOk')}</span>
       </Link>
 
       <button
@@ -43,37 +45,37 @@ export default function Home() {
         onPointerUp={onHelpUp}
         onPointerLeave={() => clearTimeout(pressTimer.current)}
         className="big-btn big-btn-help"
-        aria-label="Yardım lazım — basılı tut panik modu"
+        aria-label={t('home.needHelp')}
       >
         <span className="text-5xl" aria-hidden>🆘</span>
-        <span>YARDIM LAZIM</span>
-        <span className="text-[10px] opacity-80 font-normal">basılı tut → otomatik SOS</span>
+        <span>{t('home.needHelp')}</span>
+        <span className="text-[10px] opacity-80 font-normal">{t('home.needHelpHint')}</span>
       </button>
 
-      <Link to="/kart" className="big-btn big-btn-card" aria-label="Acil bilgilerim">
+      <Link to="/kart" className="big-btn big-btn-card" aria-label={t('home.card')}>
         <span className="text-5xl" aria-hidden>🪪</span>
-        <span>ACİL BİLGİLERİM</span>
+        <span>{t('home.card')}</span>
       </Link>
 
       <QuickDial />
 
       <div className="grid grid-cols-3 gap-2 mt-2">
         {[
-          ['/harita', '🗺️', 'Harita'],
-          ['/aile', '👨‍👩‍👧', 'Aile'],
-          ['/rapor', '🚩', 'Rapor'],
-          ['/rehber', '📖', 'Rehber'],
-          ['/pusula', '🧭', 'Pusula'],
-          ['/ilkyardim', '🚑', 'İlk yardım'],
-          ['/dudluk', '📢', 'Düdük'],
-          ['/sessiz-sos', '🆘', 'Sessiz SOS'],
-          ['/isik', '🔦', 'Işık SOS'],
-          ['/ses', '🎙️', 'Ses'],
-          ['/oku', '📷', 'Oku'],
-          ['/alfabe', '📻', 'Alfabe'],
-          ['/noktalarim', '⭐', 'Noktalar'],
-          ['/giden', '📤', 'Giden'],
-          ['/ble', '📡', 'Yakın']
+          ['/harita', '🗺️', t('home.map')],
+          ['/aile', '👨‍👩‍👧', t('home.family')],
+          ['/rapor', '🚩', t('home.report')],
+          ['/rehber', '📖', t('home.guide')],
+          ['/pusula', '🧭', t('home.compass')],
+          ['/ilkyardim', '🚑', t('home.firstAid')],
+          ['/dudluk', '📢', t('home.whistle')],
+          ['/sessiz-sos', '🆘', t('home.silentSos')],
+          ['/isik', '🔦', t('home.flash')],
+          ['/ses', '🎙️', t('home.voice')],
+          ['/oku', '📷', t('home.scan')],
+          ['/alfabe', '📻', t('home.alphabet')],
+          ['/noktalarim', '⭐', t('home.points')],
+          ['/giden', '📤', t('home.outbox')],
+          ['/ble', '📡', t('home.near')]
         ].map(([to, emoji, label]) => (
           <Link key={to} to={to} className="small-btn min-h-[4.5rem]">
             <span className="text-2xl" aria-hidden>{emoji}</span>

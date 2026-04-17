@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
 
 // Enkaz altı senaryosu için minimum enerji + maksimum fark edilme.
@@ -6,6 +7,7 @@ import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
 const SOS_VIBRATE = [200, 100, 200, 100, 200, 300, 500, 100, 500, 100, 500, 300, 200, 100, 200, 100, 200, 1500]
 
 export default function SilentSos() {
+  const { t } = useTranslation()
   const [active, setActive] = useState(false)
   const [tick, setTick] = useState(0)
   const audioCtxRef = useRef(null)
@@ -90,7 +92,7 @@ export default function SilentSos() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Sessiz SOS</h2>
+      <h2 className="text-2xl font-bold">{t('page.silentSos')}</h2>
       <p className="text-sm opacity-80">
         Enkaz altı ya da saklanma senaryosu için düşük pil kullanımlı mod. Ekran kapanmaz,
         her 8 saniyede Mors "SOS" titreşim + kısa düdük çıkarır. Sesli alarma göre daha
