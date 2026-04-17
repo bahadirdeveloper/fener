@@ -6,6 +6,7 @@ import Card from './routes/Card.jsx'
 import Family from './routes/Family.jsx'
 import Whistle from './routes/Whistle.jsx'
 import Guide from './routes/Guide.jsx'
+import Settings from './routes/Settings.jsx'
 import Layout from './components/Layout.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import IosInstallHint from './components/IosInstallHint.jsx'
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/aile" element={<Family />} />
         <Route path="/dudluk" element={<Whistle />} />
         <Route path="/rehber" element={<Guide />} />
+        <Route path="/ayarlar" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

@@ -9,18 +9,26 @@
 ## Faz 1 — PWA MVP (2-3 hafta)
 **Hedef:** Silifkeli bir yurttaşın telefonuna kurabileceği, internet kesikken bile çalışan bir uygulama.
 
-- [ ] PWA shell (manifest + service worker)
-- [ ] Ana ekran: 3 buton (BEN İYİYİM / YARDIM LAZIM / ACİL BİLGİLERİM)
-- [ ] Acil bilgi kartı (kan grubu, alerji, ilaç, acil kişi) — IndexedDB
-- [ ] Aile protokolü (buluşma noktası, iletişim sırası)
-- [ ] Offline harita (MapLibre + MBTiles, Silifke bölgesi)
-- [ ] Toplanma noktaları (AFAD GeoJSON, cache)
-- [ ] "Ben iyiyim" → WhatsApp / SMS mesajı hazırlar (outbox)
-- [ ] Enkaz düdüğü (WebAudio, 3-5kHz)
-- [ ] Sesli rehber (Web Speech API, offline TTS)
-- [ ] tr + en dil desteği
-- [ ] Lighthouse PWA 100/100
-- [ ] Bundle < 200KB gzipped
+- [x] PWA shell (manifest + service worker)
+- [x] Ana ekran: 3 buton (BEN İYİYİM / YARDIM LAZIM / ACİL BİLGİLERİM)
+- [x] Acil bilgi kartı (kan grubu, alerji, ilaç, acil kişi) — IndexedDB
+- [x] Aile protokolü — ekleme + WhatsApp/SMS mesaj outbox
+- [x] Harita — MapLibre + OSM raster + örnek toplanma noktaları + en yakın nokta
+- [x] "Ben iyiyim" / "Yardım lazım" → WhatsApp deep-link
+- [x] Enkaz düdüğü (WebAudio 3kHz darbeli)
+- [x] Sesli rehber (Web Speech API tr-TR)
+- [x] tr + en dil desteği
+- [x] İlk açılış onboarding + iOS install hint
+- [x] Erişilebilirlik: font ölçeği (S/M/L/XL) + yüksek kontrast
+- [x] Ayarlar: dil, kontrast, font, veri silme, kimlik
+- [x] Silifke bölgesi offline tile pre-fetch (opsiyonel)
+- [x] Ed25519 / ECDSA-P256 kimlik + imza lib
+- [x] beforeinstallprompt (Android/desktop) + IosInstallHint
+- [x] Error boundary
+- [x] Bundle < 200KB gzipped (ana 135KB, Map lazy 286KB)
+- [ ] Lighthouse PWA 100/100 (cihazda doğrulama)
+- [ ] Gerçek AFAD/belediye toplanma noktaları verisi
+- [ ] MBTiles/PMTiles ile tam offline vector harita
 
 ## Faz 2 — P2P (Bluetooth + WebRTC) (2-3 hafta)
 - [ ] Web Bluetooth ile yakın telefon eşleşmesi

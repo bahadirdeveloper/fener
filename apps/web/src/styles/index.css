@@ -32,6 +32,23 @@
   button {
     touch-action: manipulation;
   }
+  /* Yüksek kontrast modu */
+  html.hc {
+    --color-fener-bg: #000000;
+    --color-fener-cream: #FFFFFF;
+    --color-fener-gold: #FFD700;
+    --color-fener-gold-bright: #FFFF00;
+    --color-fener-ok: #00C853;
+    --color-fener-help: #FF1744;
+    --color-fener-card: #0A0A0A;
+    --color-fener-border: #FFFFFF;
+  }
+  html.hc body {
+    font-weight: 500;
+  }
+  html.hc .big-btn {
+    border: 3px solid white;
+  }
 }
 
 @layer components {

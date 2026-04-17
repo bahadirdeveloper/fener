@@ -12,7 +12,10 @@ export default function Layout() {
           <span className="text-2xl" aria-hidden>🔦</span>
           <span className="font-bold tracking-wider">FENER</span>
         </Link>
-        <OnlineBadge />
+        <div className="flex items-center gap-3">
+          <OnlineBadge />
+          <Link to="/ayarlar" aria-label="Ayarlar" className="text-xl leading-none">⚙️</Link>
+        </div>
       </header>
       {!isHome && (
         <div className="mb-2">
