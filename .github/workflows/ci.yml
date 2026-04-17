@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint --workspace=apps/web
+      - run: npm run test --workspace=apps/web
+      - run: npm run build --workspace=apps/web
+      - name: Bundle size check
+        run: |
+          MAIN_SIZE=$(stat -c%s apps/web/dist/assets/index-*.js | head -1)
+          MAIN_KB=$((MAIN_SIZE / 1024))
+          echo "Main bundle: ${MAIN_KB} KB (uncompressed)"
+          if [ $MAIN_KB -gt 600 ]; then
+            echo "::warning::Main bundle exceeded 600KB uncompressed"
+          fi

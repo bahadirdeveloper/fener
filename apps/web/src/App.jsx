@@ -3,10 +3,12 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './routes/Home.jsx'
 import Status from './routes/Status.jsx'
 import Card from './routes/Card.jsx'
+import CardShow from './routes/CardShow.jsx'
 import Family from './routes/Family.jsx'
 import Whistle from './routes/Whistle.jsx'
 import Guide from './routes/Guide.jsx'
 import Settings from './routes/Settings.jsx'
+import Points from './routes/Points.jsx'
 import Layout from './components/Layout.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import IosInstallHint from './components/IosInstallHint.jsx'
@@ -34,6 +36,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/durum" element={<Status />} />
         <Route path="/kart" element={<Card />} />
+        <Route path="/kart/goster" element={<CardShow />} />
         <Route
           path="/harita"
           element={<Suspense fallback={<Loading />}><Map /></Suspense>}
@@ -42,6 +45,7 @@ export default function App() {
         <Route path="/dudluk" element={<Whistle />} />
         <Route path="/rehber" element={<Guide />} />
         <Route path="/ayarlar" element={<Settings />} />
+        <Route path="/noktalarim" element={<Points />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

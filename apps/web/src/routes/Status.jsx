@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { getProfile } from '../lib/db.js'
 import { getPosition } from '../lib/location.js'
 import { buildStatusText, familyWhatsAppLinks, queueStatus, smsLink } from '../lib/outbox.js'
+import { startBeacon, stopBeacon, onBeaconChange, getState as getBeaconState } from '../lib/beacon.js'
 
 export default function Status() {
   const [params] = useSearchParams()
@@ -12,6 +13,7 @@ export default function Status() {
   const [links, setLinks] = useState([])
   const [error, setError] = useState('')
   const [profile, setProfile] = useState(null)
+  const [beacon, setBeacon] = useState(getBeaconState())
 
   useEffect(() => {
     (async () => {
@@ -24,6 +26,7 @@ export default function Status() {
         setError(e.message || 'Konum alınamadı')
       }
     })()
+    return onBeaconChange(setBeacon)
   }, [])
 
   useEffect(() => {
@@ -87,6 +90,33 @@ export default function Status() {
       ) : (
         <div className="text-sm opacity-70">
           Aile kişileri ekli değil. <a href="/aile" className="underline">Aile ekle →</a>
+        </div>
+      )}
+
+      {type === 'help' && (
+        <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-help]/50 flex flex-col gap-3">
+          <div>
+            <div className="font-semibold text-[--color-fener-help]">SOS Beacon</div>
+            <div className="text-xs opacity-80 mt-1">
+              Her 30 saniyede bir konumunu imzalı olarak outbox'a yazar.
+              Faz 2 (BLE/LoRa) ile ağdaki cihazlara yayılır.
+            </div>
+          </div>
+          {beacon?.active ? (
+            <button
+              onClick={() => stopBeacon()}
+              className="rounded-xl p-3 bg-[--color-fener-help] text-white font-bold"
+            >
+              ⏹ Beacon'ı durdur
+            </button>
+          ) : (
+            <button
+              onClick={() => startBeacon({ kind: 'sos', periodMs: 30000 })}
+              className="rounded-xl p-3 bg-[--color-fener-help] text-white font-bold"
+            >
+              🆘 Beacon'ı başlat
+            </button>
+          )}
         </div>
       )}
     </div>

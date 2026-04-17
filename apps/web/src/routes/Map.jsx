@@ -4,6 +4,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { osmRasterStyle } from '../lib/mapStyle.js'
 import { SHELTERS, SILIFKE_CENTER, nearestShelter, haversineKm } from '../data/shelters.js'
 import { getPosition } from '../lib/location.js'
+import { db } from '../lib/db.js'
 
 export default function Map() {
   const containerRef = useRef(null)
@@ -27,8 +28,56 @@ export default function Map() {
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 
-    map.on('load', () => {
+    map.on('load', async () => {
       map.addSource('shelters', { type: 'geojson', data: SHELTERS })
+
+      const userPoints = await db.meetingPoints.toArray()
+      const userFC = {
+        type: 'FeatureCollection',
+        features: userPoints.map((p) => ({
+          type: 'Feature',
+          properties: { id: `u-${p.id}`, name: p.name, kind: p.kind || 'meet', custom: true },
+          geometry: { type: 'Point', coordinates: [p.lng, p.lat] }
+        }))
+      }
+      map.addSource('user-points', { type: 'geojson', data: userFC })
+      map.addLayer({
+        id: 'user-points-dot',
+        type: 'circle',
+        source: 'user-points',
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#2F9E44',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#F5F0E8'
+        }
+      })
+      map.addLayer({
+        id: 'user-points-label',
+        type: 'symbol',
+        source: 'user-points',
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': 11,
+          'text-offset': [0, 1.4],
+          'text-anchor': 'top',
+          'text-font': ['Open Sans Regular']
+        },
+        paint: {
+          'text-color': '#2F9E44',
+          'text-halo-color': '#0A0A08',
+          'text-halo-width': 1.5
+        }
+      })
+      map.on('click', 'user-points-dot', (e) => {
+        const f = e.features?.[0]
+        if (!f) return
+        setSelected({
+          ...f.properties,
+          coordinates: f.geometry.coordinates,
+          notes: 'Kendi eklediğin nokta.'
+        })
+      })
 
       map.addLayer({
         id: 'shelters-halo',

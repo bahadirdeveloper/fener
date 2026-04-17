@@ -12,6 +12,10 @@ db.version(1).stores({
   nodes: 'id, kind, lastSeen'
 })
 
+db.version(2).stores({
+  meetingPoints: '++id, name, lat, lng, priority, kind'
+})
+
 export async function getProfile() {
   return (await db.profile.get('me')) ?? null
 }

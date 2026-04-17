@@ -3,6 +3,7 @@ import { SCALES, getScale, setScale, getContrast, setContrast } from '../lib/a11
 import { prefetchTiles, estimatedSizeMB } from '../lib/tilePrefetch.js'
 import { ensureIdentity, getIdentity, forgetIdentity } from '../lib/crypto.js'
 import { db } from '../lib/db.js'
+import { exportAll, downloadBackup, importBackup } from '../lib/backup.js'
 import InstallButton from '../components/InstallButton.jsx'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n/index.js'
@@ -158,6 +159,36 @@ export default function Settings() {
               </button>
             </>
           )}
+        </div>
+      </Section>
+
+      <Section title="Yedek">
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={async () => downloadBackup(await exportAll())}
+            className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] font-semibold"
+          >
+            💾 Dışa aktar (JSON)
+          </button>
+          <label className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] font-semibold text-center cursor-pointer">
+            📂 İçe aktar
+            <input
+              type="file"
+              accept="application/json"
+              hidden
+              onChange={async (e) => {
+                const f = e.target.files?.[0]
+                if (!f) return
+                try {
+                  const obj = JSON.parse(await f.text())
+                  await importBackup(obj, { merge: true })
+                  alert('Yedek geri yüklendi.')
+                } catch (err) {
+                  alert('Yedek okunamadı: ' + err.message)
+                }
+              }}
+            />
+          </label>
         </div>
       </Section>
 

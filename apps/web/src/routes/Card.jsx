@@ -43,7 +43,10 @@ export default function Card() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-3">
-      <h2 className="text-2xl font-bold">Acil Bilgi Kartım</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Acil Bilgi Kartım</h2>
+        <a href="/kart/goster" className="text-sm underline text-[--color-fener-gold]">QR Göster →</a>
+      </div>
       <p className="text-sm opacity-70">
         Bu bilgi sadece cihazında saklanır. Afet anında kurtarıcılara gösterebilirsin.
       </p>
