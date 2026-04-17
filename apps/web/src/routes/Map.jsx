@@ -230,6 +230,18 @@ export default function Map() {
       map.on('mouseleave', 'shelters-dot', () => {
         map.getCanvas().style.cursor = ''
       })
+
+      map.on('contextmenu', async (e) => {
+        const name = prompt('Nokta adı (örn: Aile buluşma)')
+        if (!name) return
+        await db.meetingPoints.add({
+          name: name.trim(),
+          lat: e.lngLat.lat,
+          lng: e.lngLat.lng,
+          kind: 'meet',
+          createdAt: Date.now()
+        })
+      })
     })
 
     return () => {
@@ -422,7 +434,7 @@ export default function Map() {
         </div>
       ) : (
         <div className="text-xs opacity-60">
-          Noktaya dokun veya "Konumum" ile en yakın yeri gör.
+          Noktaya dokun veya "Konumum" ile en yakın yeri gör. Haritaya uzun bas → kendi buluşma noktanı ekle.
         </div>
       )}
 
