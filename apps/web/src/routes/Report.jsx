@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { db } from '../lib/db.js'
+import { db, pushOutbox } from '../lib/db.js'
 import { getPosition } from '../lib/location.js'
+import { signMessage } from '../lib/sign.js'
 
 const KINDS = [
   { id: 'damage', label: 'Yıkık / hasarlı', emoji: '🏚️', color: '#D63F2A' },
@@ -24,13 +25,18 @@ export default function Report() {
     setBusy(true)
     try {
       const pos = await getPosition({ timeout: 8000 })
-      await db.reports.add({
+      const row = {
         kind,
         note: note.trim(),
         lat: pos.lat,
         lng: pos.lng,
         createdAt: Date.now()
-      })
+      }
+      await db.reports.add(row)
+      try {
+        const env = await signMessage({ v: 1, kind: 'report', sub: kind, note: row.note, lat: row.lat, lng: row.lng, t: row.createdAt })
+        await pushOutbox({ type: `report:${kind}`, text: JSON.stringify(env), lat: row.lat, lng: row.lng })
+      } catch { /* sign opsiyonel */ }
       nav('/harita')
     } catch (e) {
       setErr(e.message || 'Konum alınamadı')

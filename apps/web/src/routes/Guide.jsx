@@ -47,6 +47,13 @@ export default function Guide() {
       <h2 className="text-2xl font-bold">Sesli Rehber</h2>
       <p className="text-sm opacity-70">Cihazın kendi sesi ile çalar, internet gerekmez.</p>
 
+      <a
+        href="/sessiz-sos"
+        className="rounded-xl p-4 bg-[--color-fener-help] text-white font-bold text-center flex items-center justify-center gap-2"
+      >
+        🆘 Enkaz altı Sessiz SOS modu
+      </a>
+
       <ol className="flex flex-col gap-3">
         {STEPS.map((s, i) => (
           <li key={i} className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border]">

@@ -11,6 +11,7 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
       manifest: {
+        id: '/',
         name: 'Fener — Acil İletişim',
         short_name: 'Fener',
         description: 'Afet anında internetsiz çalışan açık kaynak iletişim ağı.',

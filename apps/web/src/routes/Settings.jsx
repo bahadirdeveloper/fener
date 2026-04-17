@@ -4,6 +4,7 @@ import { prefetchTiles, estimatedSizeMB } from '../lib/tilePrefetch.js'
 import { ensureIdentity, getIdentity, forgetIdentity } from '../lib/crypto.js'
 import { db } from '../lib/db.js'
 import { exportAll, downloadBackup, importBackup } from '../lib/backup.js'
+import { ensureNotifyPerm, hasNotify } from '../lib/notify.js'
 import InstallButton from '../components/InstallButton.jsx'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n/index.js'
@@ -15,6 +16,9 @@ export default function Settings() {
   const [identity, setIdentity] = useState(null)
   const [prefetch, setPrefetch] = useState(null)
   const [lang, setLang] = useState(i18n.language)
+  const [notifyPerm, setNotifyPerm] = useState(
+    hasNotify() ? Notification.permission : 'unsupported'
+  )
 
   useEffect(() => { (async () => setIdentity(await getIdentity()))() }, [])
 
@@ -93,6 +97,23 @@ export default function Settings() {
               {l.label}
             </button>
           ))}
+        </div>
+      </Section>
+
+      <Section title="Bildirimler">
+        <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-sm flex flex-col gap-2">
+          <div className="text-xs opacity-70">
+            Yakın cihazlardan (BLE) SOS ya da durum mesajı geldiğinde bildirim çıkar.
+          </div>
+          <div className="text-xs">Durum: <strong>{notifyPerm}</strong></div>
+          {notifyPerm !== 'granted' && notifyPerm !== 'unsupported' && (
+            <button
+              onClick={async () => setNotifyPerm(await ensureNotifyPerm())}
+              className="rounded-lg py-3 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold"
+            >
+              Bildirim izni iste
+            </button>
+          )}
         </div>
       </Section>
 

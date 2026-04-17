@@ -57,12 +57,12 @@ export default function CardShow() {
           <div className="text-2xl font-extrabold">{profile.name || 'Adsız'}</div>
           <div className="text-sm">{profile.birthYear || ''}</div>
         </div>
-        <Row label="Kan Grubu" value={profile.bloodGroup} big />
-        <Row label="Alerjiler" value={profile.allergies} />
-        <Row label="Kullandığı İlaçlar" value={profile.medications} />
-        <Row label="Hastalıklar" value={profile.conditions} />
-        <Row label="Acil Kişi" value={profile.emergencyContact && `${profile.emergencyContact} · ${profile.emergencyPhone || ''}`} />
-        {profile.notes && <Row label="Not" value={profile.notes} />}
+        <Row icon="🩸" label="Kan Grubu" value={profile.bloodGroup} big />
+        <Row icon="⚠️" label="Alerjiler" value={profile.allergies} />
+        <Row icon="💊" label="Kullandığı İlaçlar" value={profile.medications} />
+        <Row icon="🏥" label="Hastalıklar" value={profile.conditions} />
+        <Row icon="📞" label="Acil Kişi" value={profile.emergencyContact && `${profile.emergencyContact} · ${profile.emergencyPhone || ''}`} />
+        {profile.notes && <Row icon="📝" label="Not" value={profile.notes} />}
       </div>
 
       {qr && (
@@ -84,12 +84,15 @@ export default function CardShow() {
   )
 }
 
-function Row({ label, value, big }) {
+function Row({ label, value, big, icon }) {
   if (!value) return null
   return (
-    <div>
-      <div className="text-[10px] uppercase tracking-wider opacity-70">{label}</div>
-      <div className={big ? 'text-3xl font-extrabold' : 'text-sm font-medium'}>{value}</div>
+    <div className="flex items-start gap-2">
+      {icon && <div className={big ? 'text-3xl' : 'text-lg'} aria-hidden>{icon}</div>}
+      <div className="flex-1">
+        <div className="text-[10px] uppercase tracking-wider opacity-70">{label}</div>
+        <div className={big ? 'text-3xl font-extrabold' : 'text-base font-medium'}>{value}</div>
+      </div>
     </div>
   )
 }
