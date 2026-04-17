@@ -9,6 +9,9 @@ import Whistle from './routes/Whistle.jsx'
 import Guide from './routes/Guide.jsx'
 import Settings from './routes/Settings.jsx'
 import Points from './routes/Points.jsx'
+import Scan from './routes/Scan.jsx'
+import Outbox from './routes/Outbox.jsx'
+const Ble = lazy(() => import('./routes/Ble.jsx'))
 import Layout from './components/Layout.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import IosInstallHint from './components/IosInstallHint.jsx'
@@ -46,6 +49,9 @@ export default function App() {
         <Route path="/rehber" element={<Guide />} />
         <Route path="/ayarlar" element={<Settings />} />
         <Route path="/noktalarim" element={<Points />} />
+        <Route path="/oku" element={<Scan />} />
+        <Route path="/giden" element={<Outbox />} />
+        <Route path="/ble" element={<Suspense fallback={<Loading />}><Ble /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

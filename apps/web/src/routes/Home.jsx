@@ -24,7 +24,7 @@ export default function Home() {
         <span>ACİL BİLGİLERİM</span>
       </Link>
 
-      <div className="flex gap-2 mt-4">
+      <div className="grid grid-cols-4 gap-2 mt-4">
         <Link to="/harita" className="small-btn">
           <span className="text-xl" aria-hidden>🗺️</span>
           <span>Harita</span>
@@ -40,6 +40,22 @@ export default function Home() {
         <Link to="/rehber" className="small-btn">
           <span className="text-xl" aria-hidden>📖</span>
           <span>Rehber</span>
+        </Link>
+        <Link to="/oku" className="small-btn">
+          <span className="text-xl" aria-hidden>📷</span>
+          <span>Oku</span>
+        </Link>
+        <Link to="/noktalarim" className="small-btn">
+          <span className="text-xl" aria-hidden>⭐</span>
+          <span>Noktalar</span>
+        </Link>
+        <Link to="/giden" className="small-btn">
+          <span className="text-xl" aria-hidden>📤</span>
+          <span>Giden</span>
+        </Link>
+        <Link to="/ble" className="small-btn">
+          <span className="text-xl" aria-hidden>📡</span>
+          <span>Yakın</span>
         </Link>
       </div>
     </div>

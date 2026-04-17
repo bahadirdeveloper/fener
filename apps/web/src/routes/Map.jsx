@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { osmRasterStyle } from '../lib/mapStyle.js'
 import { SHELTERS, SILIFKE_CENTER, nearestShelter, haversineKm } from '../data/shelters.js'
 import { getPosition } from '../lib/location.js'
@@ -13,6 +14,7 @@ export default function Map() {
   const [selected, setSelected] = useState(null)
   const [userLoc, setUserLoc] = useState(null)
   const [locError, setLocError] = useState('')
+  const userPoints = useLiveQuery(() => db.meetingPoints.toArray(), []) ?? []
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -28,19 +30,9 @@ export default function Map() {
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
 
-    map.on('load', async () => {
+    map.on('load', () => {
       map.addSource('shelters', { type: 'geojson', data: SHELTERS })
-
-      const userPoints = await db.meetingPoints.toArray()
-      const userFC = {
-        type: 'FeatureCollection',
-        features: userPoints.map((p) => ({
-          type: 'Feature',
-          properties: { id: `u-${p.id}`, name: p.name, kind: p.kind || 'meet', custom: true },
-          geometry: { type: 'Point', coordinates: [p.lng, p.lat] }
-        }))
-      }
-      map.addSource('user-points', { type: 'geojson', data: userFC })
+      map.addSource('user-points', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
       map.addLayer({
         id: 'user-points-dot',
         type: 'circle',
@@ -142,6 +134,21 @@ export default function Map() {
       mapRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !map.isStyleLoaded()) return
+    const src = map.getSource('user-points')
+    if (!src) return
+    src.setData({
+      type: 'FeatureCollection',
+      features: userPoints.map((p) => ({
+        type: 'Feature',
+        properties: { id: `u-${p.id}`, name: p.name, kind: p.kind || 'meet', custom: true },
+        geometry: { type: 'Point', coordinates: [p.lng, p.lat] }
+      }))
+    })
+  }, [userPoints])
 
   async function locate() {
     setLocError('')

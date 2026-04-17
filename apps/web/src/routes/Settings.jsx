@@ -79,14 +79,18 @@ export default function Settings() {
       </Section>
 
       <Section title="Dil">
-        <div className="grid grid-cols-2 gap-2">
-          {['tr', 'en'].map((l) => (
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { id: 'tr', label: 'Türkçe' },
+            { id: 'en', label: 'English' },
+            { id: 'ar', label: 'العربية' }
+          ].map((l) => (
             <button
-              key={l}
-              onClick={() => changeLang(l)}
-              className={`rounded-lg py-3 font-bold ${lang.startsWith(l) ? 'bg-[--color-fener-gold] text-[--color-fener-bg]' : 'bg-[--color-fener-card] border border-[--color-fener-border]'}`}
+              key={l.id}
+              onClick={() => changeLang(l.id)}
+              className={`rounded-lg py-3 font-bold ${lang.startsWith(l.id) ? 'bg-[--color-fener-gold] text-[--color-fener-bg]' : 'bg-[--color-fener-card] border border-[--color-fener-border]'}`}
             >
-              {l === 'tr' ? 'Türkçe' : 'English'}
+              {l.label}
             </button>
           ))}
         </div>
