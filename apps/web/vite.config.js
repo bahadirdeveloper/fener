@@ -53,6 +53,14 @@ export default defineConfig({
               cacheName: 'fener-osm-tiles',
               expiration: { maxEntries: 2000, maxAgeSeconds: 60 * 60 * 24 * 90 }
             }
+          },
+          {
+            urlPattern: /^https:\/\/protomaps\.github\.io\/basemaps-assets\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fener-map-glyphs',
+              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 180 }
+            }
           }
         ]
       },

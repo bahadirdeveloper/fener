@@ -57,47 +57,29 @@ export default function Home() {
 
       <QuickDial />
 
-      <div className="grid grid-cols-4 gap-2 mt-2">
-        <Link to="/harita" className="small-btn">
-          <span className="text-xl" aria-hidden>🗺️</span>
-          <span>Harita</span>
-        </Link>
-        <Link to="/aile" className="small-btn">
-          <span className="text-xl" aria-hidden>👨‍👩‍👧</span>
-          <span>Aile</span>
-        </Link>
-        <Link to="/dudluk" className="small-btn">
-          <span className="text-xl" aria-hidden>📢</span>
-          <span>Düdük</span>
-        </Link>
-        <Link to="/rehber" className="small-btn">
-          <span className="text-xl" aria-hidden>📖</span>
-          <span>Rehber</span>
-        </Link>
-        <Link to="/oku" className="small-btn">
-          <span className="text-xl" aria-hidden>📷</span>
-          <span>Oku</span>
-        </Link>
-        <Link to="/noktalarim" className="small-btn">
-          <span className="text-xl" aria-hidden>⭐</span>
-          <span>Noktalar</span>
-        </Link>
-        <Link to="/giden" className="small-btn">
-          <span className="text-xl" aria-hidden>📤</span>
-          <span>Giden</span>
-        </Link>
-        <Link to="/rapor" className="small-btn">
-          <span className="text-xl" aria-hidden>🚩</span>
-          <span>Rapor</span>
-        </Link>
-        <Link to="/ses" className="small-btn">
-          <span className="text-xl" aria-hidden>🎙️</span>
-          <span>Ses</span>
-        </Link>
-        <Link to="/ble" className="small-btn">
-          <span className="text-xl" aria-hidden>📡</span>
-          <span>Yakın</span>
-        </Link>
+      <div className="grid grid-cols-3 gap-2 mt-2">
+        {[
+          ['/harita', '🗺️', 'Harita'],
+          ['/aile', '👨‍👩‍👧', 'Aile'],
+          ['/rapor', '🚩', 'Rapor'],
+          ['/rehber', '📖', 'Rehber'],
+          ['/pusula', '🧭', 'Pusula'],
+          ['/ilkyardim', '🚑', 'İlk yardım'],
+          ['/dudluk', '📢', 'Düdük'],
+          ['/sessiz-sos', '🆘', 'Sessiz SOS'],
+          ['/isik', '🔦', 'Işık SOS'],
+          ['/ses', '🎙️', 'Ses'],
+          ['/oku', '📷', 'Oku'],
+          ['/alfabe', '📻', 'Alfabe'],
+          ['/noktalarim', '⭐', 'Noktalar'],
+          ['/giden', '📤', 'Giden'],
+          ['/ble', '📡', 'Yakın']
+        ].map(([to, emoji, label]) => (
+          <Link key={to} to={to} className="small-btn min-h-[4.5rem]">
+            <span className="text-2xl" aria-hidden>{emoji}</span>
+            <span>{label}</span>
+          </Link>
+        ))}
       </div>
     </div>
   )

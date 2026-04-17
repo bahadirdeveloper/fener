@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { db, pushOutbox } from '../lib/db.js'
 import { getPosition } from '../lib/location.js'
 import { signMessage } from '../lib/sign.js'
@@ -19,6 +20,7 @@ export default function Report() {
   const [note, setNote] = useState('')
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const past = useLiveQuery(() => db.reports.orderBy('createdAt').reverse().limit(20).toArray(), []) ?? []
 
   async function submit() {
     setErr('')
@@ -84,6 +86,36 @@ export default function Report() {
       >
         {busy ? 'Kaydediliyor…' : 'Raporu kaydet'}
       </button>
+
+      {past.length > 0 && (
+        <div className="mt-4">
+          <div className="text-xs uppercase tracking-wider opacity-70 mb-2">Geçmiş raporlar</div>
+          <ul className="flex flex-col gap-2">
+            {past.map((r) => {
+              const meta = KINDS.find((k) => k.id === r.kind)
+              return (
+                <li key={r.id} className="rounded-lg p-2 bg-[--color-fener-card] border border-[--color-fener-border] flex items-center gap-2 text-sm">
+                  <span className="text-xl" aria-hidden>{meta?.emoji}</span>
+                  <div className="flex-1">
+                    <div className="font-semibold">{meta?.label}</div>
+                    <div className="text-xs opacity-70">
+                      {new Date(r.createdAt).toLocaleString('tr-TR')} · {r.lat?.toFixed(4)}, {r.lng?.toFixed(4)}
+                    </div>
+                    {r.note && <div className="text-xs opacity-80 mt-1">{r.note}</div>}
+                  </div>
+                  <button
+                    onClick={() => db.reports.delete(r.id)}
+                    className="text-xs text-[--color-fener-help] px-2"
+                    aria-label="Sil"
+                  >
+                    Sil
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
