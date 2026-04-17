@@ -47,12 +47,20 @@ export default function Guide() {
       <h2 className="text-2xl font-bold">Sesli Rehber</h2>
       <p className="text-sm opacity-70">Cihazın kendi sesi ile çalar, internet gerekmez.</p>
 
-      <a
-        href="/sessiz-sos"
-        className="rounded-xl p-4 bg-[--color-fener-help] text-white font-bold text-center flex items-center justify-center gap-2"
-      >
-        🆘 Enkaz altı Sessiz SOS modu
-      </a>
+      <div className="grid grid-cols-2 gap-2">
+        <a href="/sessiz-sos" className="rounded-xl p-3 bg-[--color-fener-help] text-white font-bold text-center text-sm">
+          🆘 Sessiz SOS
+        </a>
+        <a href="/isik" className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-gold] text-center text-sm font-bold">
+          🔦 Işık SOS
+        </a>
+        <a href="/ilkyardim" className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-center text-sm font-bold">
+          🚑 İlk yardım
+        </a>
+        <a href="/alfabe" className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-center text-sm font-bold">
+          📻 Telsiz alfabesi
+        </a>
+      </div>
 
       <ol className="flex flex-col gap-3">
         {STEPS.map((s, i) => (

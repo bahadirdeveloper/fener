@@ -12,15 +12,45 @@ export default function Outbox() {
     await db.outbox.clear()
   }
 
+  async function clearSent() {
+    await db.outbox.where('status').equals('sent').delete()
+  }
+
+  async function markSent(id) {
+    await db.outbox.update(id, { status: 'sent', sentAt: Date.now() })
+  }
+
+  async function retry(id) {
+    await db.outbox.update(id, { status: 'pending', sentAt: null })
+  }
+
+  const pending = items.filter((m) => m.status !== 'sent').length
+  const sent = items.length - pending
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Giden Kutusu</h2>
         {items.length > 0 && (
-          <button onClick={clearAll} className="text-xs px-2 py-1 rounded bg-[--color-fener-help] text-white">
-            Temizle
-          </button>
+          <div className="flex gap-1">
+            {sent > 0 && (
+              <button onClick={clearSent} className="text-xs px-2 py-1 rounded bg-[--color-fener-card] border border-[--color-fener-border]">
+                Gönderilenleri sil
+              </button>
+            )}
+            <button onClick={clearAll} className="text-xs px-2 py-1 rounded bg-[--color-fener-help] text-white">
+              Hepsini sil
+            </button>
+          </div>
         )}
+      </div>
+      <div className="flex gap-2 text-xs">
+        <span className="px-2 py-1 rounded bg-[--color-fener-card] border border-[--color-fener-border]">
+          Bekleyen: <strong>{pending}</strong>
+        </span>
+        <span className="px-2 py-1 rounded bg-[--color-fener-card] border border-[--color-fener-border]">
+          Gönderilen: <strong>{sent}</strong>
+        </span>
       </div>
       <p className="text-sm opacity-70">
         Son 100 kayıt. Faz 2'de BLE/LoRa ağa gönderilecek.
@@ -69,8 +99,22 @@ export default function Outbox() {
                   📍 {m.lat.toFixed(4)}, {m.lng.toFixed(4)}
                 </div>
               )}
-              <div className="text-[10px] mt-1 opacity-60">
-                Durum: {m.status || 'pending'}
+              <div className="flex items-center justify-between mt-1">
+                <div className="text-[10px] opacity-60">
+                  Durum: {m.status || 'pending'}
+                  {m.sentAt && ` · ${new Date(m.sentAt).toLocaleTimeString('tr-TR')}`}
+                </div>
+                <div className="flex gap-1">
+                  {m.status === 'sent' ? (
+                    <button onClick={() => retry(m.id)} className="text-[10px] px-2 py-0.5 rounded bg-[--color-fener-card] border border-[--color-fener-border]">
+                      ↻ tekrar
+                    </button>
+                  ) : (
+                    <button onClick={() => markSent(m.id)} className="text-[10px] px-2 py-0.5 rounded bg-[--color-fener-ok] text-white">
+                      ✓ gönderildi
+                    </button>
+                  )}
+                </div>
               </div>
             </li>
           )
