@@ -15,6 +15,7 @@ export default function Map() {
   const [userLoc, setUserLoc] = useState(null)
   const [locError, setLocError] = useState('')
   const userPoints = useLiveQuery(() => db.meetingPoints.toArray(), []) ?? []
+  const reports = useLiveQuery(() => db.reports.toArray(), []) ?? []
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -33,6 +34,49 @@ export default function Map() {
     map.on('load', () => {
       map.addSource('shelters', { type: 'geojson', data: SHELTERS })
       map.addSource('user-points', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
+      map.addSource('reports', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
+      map.addLayer({
+        id: 'reports-dot',
+        type: 'circle',
+        source: 'reports',
+        paint: {
+          'circle-radius': 9,
+          'circle-color': [
+            'match', ['get', 'kind'],
+            'damage', '#D63F2A',
+            'fire', '#E85D2A',
+            'flood', '#2A8FD6',
+            'blocked', '#E0A02A',
+            'safe', '#2F9E44',
+            '#C4A882'
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#0A0A08'
+        }
+      })
+      map.addLayer({
+        id: 'reports-label',
+        type: 'symbol',
+        source: 'reports',
+        layout: {
+          'text-field': ['get', 'emoji'],
+          'text-size': 14,
+          'text-offset': [0, 0],
+          'text-anchor': 'center',
+          'text-font': ['Open Sans Regular'],
+          'text-allow-overlap': true
+        }
+      })
+      map.on('click', 'reports-dot', (e) => {
+        const f = e.features?.[0]
+        if (!f) return
+        setSelected({
+          name: f.properties.label,
+          capacity: '-',
+          notes: f.properties.note || 'Saha raporu',
+          coordinates: f.geometry.coordinates
+        })
+      })
       map.addLayer({
         id: 'user-points-dot',
         type: 'circle',
@@ -149,6 +193,32 @@ export default function Map() {
       }))
     })
   }, [userPoints])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !map.isStyleLoaded()) return
+    const src = map.getSource('reports')
+    if (!src) return
+    const KIND_META = {
+      damage: { emoji: '🏚️', label: 'Yıkık / hasarlı' },
+      fire: { emoji: '🔥', label: 'Yangın' },
+      flood: { emoji: '🌊', label: 'Sel / su' },
+      blocked: { emoji: '🚧', label: 'Yol kapalı' },
+      safe: { emoji: '✅', label: 'Güvenli alan' },
+      other: { emoji: '❕', label: 'Diğer' }
+    }
+    src.setData({
+      type: 'FeatureCollection',
+      features: reports.map((r) => {
+        const m = KIND_META[r.kind] || KIND_META.other
+        return {
+          type: 'Feature',
+          properties: { id: `r-${r.id}`, kind: r.kind, emoji: m.emoji, label: m.label, note: r.note },
+          geometry: { type: 'Point', coordinates: [r.lng, r.lat] }
+        }
+      })
+    })
+  }, [reports])
 
   async function locate() {
     setLocError('')

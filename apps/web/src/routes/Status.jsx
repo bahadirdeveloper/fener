@@ -4,6 +4,7 @@ import { getProfile } from '../lib/db.js'
 import { getPosition } from '../lib/location.js'
 import { buildStatusText, familyWhatsAppLinks, queueStatus, smsLink } from '../lib/outbox.js'
 import { startBeacon, stopBeacon, onBeaconChange, getState as getBeaconState } from '../lib/beacon.js'
+import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
 
 export default function Status() {
   const [params] = useSearchParams()
@@ -26,8 +27,14 @@ export default function Status() {
         setError(e.message || 'Konum alınamadı')
       }
     })()
-    return onBeaconChange(setBeacon)
+    const off = onBeaconChange(setBeacon)
+    return () => { off(); releaseWakeLock() }
   }, [])
+
+  useEffect(() => {
+    if (type === 'help') acquireWakeLock()
+    else releaseWakeLock()
+  }, [type])
 
   useEffect(() => {
     (async () => {

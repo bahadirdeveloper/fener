@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { haptic } from '../lib/prefs.js'
+import QuickDial from '../components/QuickDial.jsx'
 
 export default function Home() {
   return (
@@ -24,7 +25,9 @@ export default function Home() {
         <span>ACİL BİLGİLERİM</span>
       </Link>
 
-      <div className="grid grid-cols-4 gap-2 mt-4">
+      <QuickDial />
+
+      <div className="grid grid-cols-4 gap-2 mt-2">
         <Link to="/harita" className="small-btn">
           <span className="text-xl" aria-hidden>🗺️</span>
           <span>Harita</span>
@@ -52,6 +55,14 @@ export default function Home() {
         <Link to="/giden" className="small-btn">
           <span className="text-xl" aria-hidden>📤</span>
           <span>Giden</span>
+        </Link>
+        <Link to="/rapor" className="small-btn">
+          <span className="text-xl" aria-hidden>🚩</span>
+          <span>Rapor</span>
+        </Link>
+        <Link to="/ses" className="small-btn">
+          <span className="text-xl" aria-hidden>🎙️</span>
+          <span>Ses</span>
         </Link>
         <Link to="/ble" className="small-btn">
           <span className="text-xl" aria-hidden>📡</span>

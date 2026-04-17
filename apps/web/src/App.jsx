@@ -5,16 +5,20 @@ import Status from './routes/Status.jsx'
 import Card from './routes/Card.jsx'
 import CardShow from './routes/CardShow.jsx'
 import Family from './routes/Family.jsx'
+import FamilyStatus from './routes/FamilyStatus.jsx'
 import Whistle from './routes/Whistle.jsx'
 import Guide from './routes/Guide.jsx'
 import Settings from './routes/Settings.jsx'
 import Points from './routes/Points.jsx'
 import Scan from './routes/Scan.jsx'
 import Outbox from './routes/Outbox.jsx'
+import Report from './routes/Report.jsx'
+import Voice from './routes/Voice.jsx'
 const Ble = lazy(() => import('./routes/Ble.jsx'))
 import Layout from './components/Layout.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import IosInstallHint from './components/IosInstallHint.jsx'
+import UpdateBanner from './components/UpdateBanner.jsx'
 import { getFlag } from './lib/prefs.js'
 
 const Map = lazy(() => import('./routes/Map.jsx'))
@@ -34,6 +38,7 @@ export default function App() {
     <>
     {showOnboarding && <Onboarding onDone={() => setShowOnboarding(false)} />}
     <IosInstallHint />
+    <UpdateBanner />
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
@@ -45,12 +50,15 @@ export default function App() {
           element={<Suspense fallback={<Loading />}><Map /></Suspense>}
         />
         <Route path="/aile" element={<Family />} />
+        <Route path="/aile/durum" element={<FamilyStatus />} />
         <Route path="/dudluk" element={<Whistle />} />
         <Route path="/rehber" element={<Guide />} />
         <Route path="/ayarlar" element={<Settings />} />
         <Route path="/noktalarim" element={<Points />} />
         <Route path="/oku" element={<Scan />} />
         <Route path="/giden" element={<Outbox />} />
+        <Route path="/rapor" element={<Report />} />
+        <Route path="/ses" element={<Voice />} />
         <Route path="/ble" element={<Suspense fallback={<Loading />}><Ble /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

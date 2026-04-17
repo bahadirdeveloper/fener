@@ -16,6 +16,14 @@ db.version(2).stores({
   meetingPoints: '++id, name, lat, lng, priority, kind'
 })
 
+db.version(3).stores({
+  reports: '++id, kind, lat, lng, createdAt'
+})
+
+db.version(4).stores({
+  voiceNotes: '++id, createdAt'
+})
+
 export async function getProfile() {
   return (await db.profile.get('me')) ?? null
 }

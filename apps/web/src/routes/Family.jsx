@@ -21,7 +21,12 @@ export default function Family() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Ailem</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Ailem</h2>
+        <a href="/aile/durum" className="text-sm px-3 py-2 rounded-lg bg-[--color-fener-card] border border-[--color-fener-border] font-semibold">
+          📊 Durum
+        </a>
+      </div>
       <p className="text-sm opacity-70">
         Acil durumda "Ben İyiyim" mesajı bu kişilere WhatsApp ile gönderilecek.
       </p>
