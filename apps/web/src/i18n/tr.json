@@ -1,0 +1,21 @@
+{
+  "app": {
+    "name": "Fener",
+    "tagline": "Silifke Acil İletişim",
+    "subline": "İnternet olmasa da çalışır."
+  },
+  "home": {
+    "imOk": "BEN İYİYİM",
+    "needHelp": "YARDIM LAZIM",
+    "card": "ACİL BİLGİLERİM",
+    "map": "Harita",
+    "family": "Aile",
+    "whistle": "Düdük",
+    "guide": "Rehber"
+  },
+  "status": {
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı"
+  },
+  "footer": "Fener · Silifke Teknoloji Topluluğu · Apache-2.0"
+}

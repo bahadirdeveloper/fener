@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-fener-bg: #0A0A08;
+  --color-fener-cream: #F5F0E8;
+  --color-fener-gold: #C4A882;
+  --color-fener-gold-bright: #F5D78E;
+  --color-fener-ok: #2F9E44;
+  --color-fener-ok-dark: #1F6E2D;
+  --color-fener-help: #D63F2A;
+  --color-fener-help-dark: #9E2A1B;
+  --color-fener-card: #1A1A16;
+  --color-fener-border: #2E2E28;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    background: var(--color-fener-bg);
+    color: var(--color-fener-cream);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: contain;
+  }
+  button {
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  .big-btn {
+    @apply w-full rounded-2xl px-6 py-8 text-center font-bold text-2xl shadow-lg transition-transform active:scale-[0.98] min-h-[7rem] flex flex-col items-center justify-center gap-2;
+  }
+  .big-btn-ok {
+    background: var(--color-fener-ok);
+    color: white;
+  }
+  .big-btn-help {
+    background: var(--color-fener-help);
+    color: white;
+  }
+  .big-btn-card {
+    background: var(--color-fener-gold);
+    color: var(--color-fener-bg);
+  }
+  .small-btn {
+    @apply rounded-xl px-3 py-3 text-sm font-semibold text-center flex flex-col items-center gap-1 flex-1;
+    background: var(--color-fener-card);
+    border: 1px solid var(--color-fener-border);
+    color: var(--color-fener-cream);
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "app": {
+    "name": "Fener",
+    "tagline": "Silifke Emergency",
+    "subline": "Works without the internet."
+  },
+  "home": {
+    "imOk": "I'M OK",
+    "needHelp": "NEED HELP",
+    "card": "MY EMERGENCY CARD",
+    "map": "Map",
+    "family": "Family",
+    "whistle": "Whistle",
+    "guide": "Guide"
+  },
+  "status": {
+    "online": "Online",
+    "offline": "Offline"
+  },
+  "footer": "Fener · Silifke Tech Community · Apache-2.0"
+}
