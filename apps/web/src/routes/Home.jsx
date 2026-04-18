@@ -2,8 +2,20 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { haptic } from '../lib/prefs.js'
+import { useLiveQuery } from 'dexie-react-hooks'
 import QuickDial from '../components/QuickDial.jsx'
 import { startBeacon } from '../lib/beacon.js'
+import { db } from '../lib/db.js'
+
+function fmtAgo(ms) {
+  const s = Math.floor(ms / 1000)
+  if (s < 60) return `${s}s önce`
+  const m = Math.floor(s / 60)
+  if (m < 60) return `${m}dk önce`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}sa önce`
+  return `${Math.floor(h / 24)}g önce`
+}
 
 function kitPct() {
   try {
@@ -23,6 +35,10 @@ export default function Home() {
   const longFired = useRef(false)
   const [kit, setKit] = useState(0)
   useEffect(() => { setKit(kitPct()) }, [])
+  const lastOk = useLiveQuery(
+    () => db.outbox.where('type').equals('status:ok').reverse().sortBy('createdAt').then((r) => r[0]),
+    []
+  )
 
   function onHelpDown() {
     longFired.current = false
@@ -51,6 +67,11 @@ export default function Home() {
       <Link to="/durum?t=ok" onClick={() => haptic(20)} className="big-btn big-btn-ok" aria-label={t('home.imOk')}>
         <span className="text-5xl" aria-hidden>👋</span>
         <span>{t('home.imOk')}</span>
+        {lastOk?.createdAt && (
+          <span className="text-[10px] opacity-80 font-normal">
+            Son: {fmtAgo(Date.now() - lastOk.createdAt)}
+          </span>
+        )}
       </Link>
 
       <button
