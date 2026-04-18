@@ -4,11 +4,39 @@ import OnlineBadge from './OnlineBadge.jsx'
 import BatteryBadge from './BatteryBadge.jsx'
 import { onBeaconChange, getState as getBeaconState, stopBeacon } from '../lib/beacon.js'
 
+const TITLES = {
+  '/': 'Fener',
+  '/durum': 'Fener · Durum',
+  '/kart': 'Fener · Kart',
+  '/kart/goster': 'Fener · Kart QR',
+  '/harita': 'Fener · Harita',
+  '/aile': 'Fener · Aile',
+  '/aile/durum': 'Fener · Aile durumu',
+  '/dudluk': 'Fener · Düdük',
+  '/rehber': 'Fener · Rehber',
+  '/ayarlar': 'Fener · Ayarlar',
+  '/noktalarim': 'Fener · Noktalarım',
+  '/oku': 'Fener · QR Oku',
+  '/giden': 'Fener · Giden',
+  '/rapor': 'Fener · Rapor',
+  '/ses': 'Fener · Ses',
+  '/sessiz-sos': 'Fener · Sessiz SOS',
+  '/alfabe': 'Fener · Alfabe',
+  '/isik': 'Fener · Işık SOS',
+  '/ilkyardim': 'Fener · İlk yardım',
+  '/pusula': 'Fener · Pusula',
+  '/hazirlik': 'Fener · Hazırlık',
+  '/ble': 'Fener · BLE'
+}
+
 export default function Layout() {
   const location = useLocation()
   const isHome = location.pathname === '/'
   const [beacon, setBeacon] = useState(getBeaconState())
   useEffect(() => onBeaconChange(setBeacon), [])
+  useEffect(() => {
+    document.title = TITLES[location.pathname] || 'Fener'
+  }, [location.pathname])
 
   return (
     <div className="min-h-full flex flex-col max-w-md mx-auto px-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
