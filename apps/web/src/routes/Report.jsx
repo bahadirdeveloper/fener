@@ -98,7 +98,31 @@ export default function Report() {
 
       {past.length > 0 && (
         <div className="mt-4">
-          <div className="text-xs uppercase tracking-wider opacity-70 mb-2">Geçmiş raporlar</div>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-xs uppercase tracking-wider opacity-70">Geçmiş raporlar</div>
+            <button
+              onClick={() => {
+                const geo = {
+                  type: 'FeatureCollection',
+                  features: past.map((r) => ({
+                    type: 'Feature',
+                    geometry: { type: 'Point', coordinates: [r.lng, r.lat] },
+                    properties: { kind: r.kind, note: r.note, createdAt: r.createdAt }
+                  }))
+                }
+                const blob = new Blob([JSON.stringify(geo, null, 2)], { type: 'application/geo+json' })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = `fener-raporlar-${new Date().toISOString().slice(0, 10)}.geojson`
+                a.click()
+                URL.revokeObjectURL(url)
+              }}
+              className="text-xs px-3 py-1 rounded-lg bg-[--color-fener-card] border border-[--color-fener-border] font-semibold"
+            >
+              💾 GeoJSON indir
+            </button>
+          </div>
           <ul className="flex flex-col gap-2">
             {past.map((r) => {
               const meta = KINDS.find((k) => k.id === r.kind)
