@@ -76,13 +76,32 @@ export default function CardShow() {
           <div className="text-xs text-[--color-fener-bg] opacity-80 text-center">
             Kurtarıcılar Fener ile okuyabilir. Veri cihazda kalır.
           </div>
-          <a
-            href={qr}
-            download={`fener-kart-${(profile.name || 'ben').replace(/\s+/g, '-')}.png`}
-            className="text-xs underline text-[--color-fener-bg]"
-          >
-            PNG olarak indir
-          </a>
+          <div className="flex gap-3 text-xs">
+            <a
+              href={qr}
+              download={`fener-kart-${(profile.name || 'ben').replace(/\s+/g, '-')}.png`}
+              className="underline text-[--color-fener-bg]"
+            >
+              PNG olarak indir
+            </a>
+            {typeof navigator !== 'undefined' && navigator.canShare && (
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const blob = await (await fetch(qr)).blob()
+                    const file = new File([blob], 'fener-kart.png', { type: 'image/png' })
+                    if (navigator.canShare({ files: [file] })) {
+                      await navigator.share({ files: [file], title: 'Fener acil kartım' })
+                    }
+                  } catch { /* noop */ }
+                }}
+                className="underline text-[--color-fener-bg]"
+              >
+                ↗ Paylaş
+              </button>
+            )}
+          </div>
         </div>
       )}
 
