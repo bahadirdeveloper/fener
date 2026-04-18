@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { db } from '../lib/db.js'
 
 export default function Scan() {
   const { t } = useTranslation()
@@ -141,6 +142,19 @@ export default function Scan() {
 }
 
 function CardDisplay({ data }) {
+  const [saved, setSaved] = useState(false)
+  async function addToFamily() {
+    if (!data.name) return
+    const exists = await db.family.filter((f) => f.name === data.name && f.phone === (data.ep || '')).first()
+    if (exists) { setSaved(true); return }
+    await db.family.add({
+      name: data.name,
+      phone: data.ep || '',
+      relation: data.ec || 'Diğer',
+      isPrimary: false
+    })
+    setSaved(true)
+  }
   return (
     <div className="rounded-xl p-3 bg-[--color-fener-cream] text-[--color-fener-bg] flex flex-col gap-2">
       <div className="flex items-baseline justify-between">
@@ -158,6 +172,15 @@ function CardDisplay({ data }) {
       <Row label="Hastalıklar" value={data.conditions} />
       <Row label="Acil kişi" value={data.ec && `${data.ec} · ${data.ep || ''}`} />
       <Row label="Not" value={data.notes} />
+      {data.name && (
+        <button
+          onClick={addToFamily}
+          disabled={saved}
+          className="mt-2 rounded-lg py-2 bg-[--color-fener-bg] text-[--color-fener-cream] text-sm font-semibold disabled:opacity-60"
+        >
+          {saved ? '✓ Aileye eklendi' : '👨‍👩‍👧 Aile listeme ekle'}
+        </button>
+      )}
     </div>
   )
 }
