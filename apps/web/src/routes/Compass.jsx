@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { getPosition } from '../lib/location.js'
+import { getPosition, getLastKnownPosition } from '../lib/location.js'
 import { nearestShelter, haversineKm, SHELTERS } from '../data/shelters.js'
 import { db } from '../lib/db.js'
 
@@ -57,7 +57,15 @@ export default function Compass() {
         const near = nearestShelter([p.lng, p.lat])
         setTargetId(`s-${near.feature.properties.id}`)
       } catch (e) {
-        setPermErr(e.message || 'Konum alınamadı')
+        const last = getLastKnownPosition()
+        if (last) {
+          setPos(last)
+          const near = nearestShelter([last.lng, last.lat])
+          setTargetId(`s-${near.feature.properties.id}`)
+          setPermErr('Canlı konum yok; son bilinen nokta kullanılıyor.')
+        } else {
+          setPermErr(e.message || 'Konum alınamadı')
+        }
       }
     })()
   }, [])

@@ -5,7 +5,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { osmRasterStyle } from '../lib/mapStyle.js'
 import { SHELTERS, SILIFKE_CENTER, nearestShelter, haversineKm } from '../data/shelters.js'
 import { HAZARDS, hazardAt } from '../data/hazards.js'
-import { getPosition } from '../lib/location.js'
+import { getPosition, getLastKnownPosition } from '../lib/location.js'
 import { db } from '../lib/db.js'
 
 export default function Map() {
@@ -334,8 +334,16 @@ export default function Map() {
 
   async function locate() {
     setLocError('')
+    let pos
     try {
-      const pos = await getPosition()
+      pos = await getPosition()
+    } catch (e) {
+      const last = getLastKnownPosition()
+      if (!last) { setLocError(e.message || 'Konum alınamadı'); return }
+      pos = last
+      setLocError('Canlı konum yok; son bilinen nokta kullanılıyor.')
+    }
+    try {
       setUserLoc(pos)
       const lngLat = [pos.lng, pos.lat]
       const map = mapRef.current
@@ -359,7 +367,7 @@ export default function Map() {
         distanceKm: near.distanceKm
       })
     } catch (e) {
-      setLocError(e.message || 'Konum alınamadı')
+      setLocError(e.message || 'Konum işlenemedi')
     }
   }
 
