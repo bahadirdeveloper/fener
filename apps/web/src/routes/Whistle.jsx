@@ -14,22 +14,28 @@ export default function Whistle() {
   const gainRef = useRef(null)
   const timerRef = useRef(null)
   const [playing, setPlaying] = useState(false)
+  const [err, setErr] = useState('')
 
   useEffect(() => () => stop(), [])
 
-  function ensureCtx() {
+  async function ensureCtx() {
     if (!ctxRef.current) {
       const Ctx = window.AudioContext || window.webkitAudioContext
+      if (!Ctx) return null
       ctxRef.current = new Ctx()
+    }
+    if (ctxRef.current.state === 'suspended') {
+      try { await ctxRef.current.resume() } catch { /* noop */ }
     }
     return ctxRef.current
   }
 
-  function loop() {
-    const ctx = ensureCtx()
+  async function loop() {
+    const ctx = await ensureCtx()
+    if (!ctx) { setErr('Tarayıcı ses üretmeyi desteklemiyor.'); setPlaying(false); return }
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
-    osc.type = 'sine'
+    osc.type = 'square'
     osc.frequency.value = FREQ
     gain.gain.value = 0
     osc.connect(gain).connect(ctx.destination)
@@ -41,7 +47,7 @@ export default function Whistle() {
     const step = () => {
       const s = PATTERN[i % PATTERN.length]
       if (s.on != null) {
-        gain.gain.setValueAtTime(1, ctx.currentTime)
+        gain.gain.setValueAtTime(0.9, ctx.currentTime)
         timerRef.current = setTimeout(() => { i++; step() }, s.on)
       } else {
         gain.gain.setValueAtTime(0, ctx.currentTime)
@@ -51,11 +57,17 @@ export default function Whistle() {
     step()
   }
 
-  function start() {
+  async function start() {
     if (playing) return
+    setErr('')
     setPlaying(true)
     acquireWakeLock()
-    loop()
+    try {
+      await loop()
+    } catch (e) {
+      setErr(e?.message || 'Ses başlatılamadı')
+      setPlaying(false)
+    }
   }
 
   function stop() {
@@ -71,10 +83,17 @@ export default function Whistle() {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Enkaz Düdüğü</h2>
-      <p className="text-sm opacity-80">
-        Enkaz altında sesin duyulmasına yardım eder. 3kHz frekansta darbeli sinyal çalar.
-        Telefonun hoparlörünü kapatma, sesi sonuna kadar aç.
+      <p className="text-base opacity-80">
+        Enkaz altında sesinin duyulmasına yardım eder. Telefonun sessiz tuşunu kapat, sesi sonuna kadar aç, hoparlörü üste çevir.
       </p>
+      {err && (
+        <div className="rounded-xl p-3 bg-[--color-fener-help]/20 border border-[--color-fener-help] text-sm">
+          {err}
+        </div>
+      )}
+      <div className="text-xs opacity-60">
+        iPhone'da sessize alma (yan tuş) varsa ses çıkmaz. Android'de medya sesini aç.
+      </div>
 
       {playing ? (
         <button onClick={stop} className="big-btn big-btn-help">
