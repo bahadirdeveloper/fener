@@ -24,7 +24,9 @@ export default function Layout() {
       {beacon?.active && (
         <div className="flex items-center gap-2 rounded-lg px-3 py-2 bg-[--color-fener-help] text-white text-xs font-semibold mb-2">
           <span className="animate-pulse">🆘</span>
-          <span className="flex-1">SOS beacon aktif — her {Math.round((beacon.periodMs || 30000) / 1000)} sn yayın</span>
+          <span className="flex-1">
+            SOS beacon aktif — her {Math.round((beacon.periodMs || 30000) / 1000)} sn · {beacon.count || 0} gönderildi
+          </span>
           <button onClick={() => stopBeacon()} className="underline">durdur</button>
         </div>
       )}

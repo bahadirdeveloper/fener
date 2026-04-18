@@ -9,6 +9,7 @@ const STATE_KEY = 'fener.beacon.v1'
 
 let intervalId = null
 let listeners = new Set()
+let count = 0
 
 export function onBeaconChange(fn) {
   listeners.add(fn)
@@ -23,10 +24,10 @@ function notify() {
 export function getState() {
   try {
     const raw = localStorage.getItem(STATE_KEY)
-    if (!raw) return { active: false }
+    if (!raw) return { active: false, count: 0 }
     const s = JSON.parse(raw)
-    return { ...s, active: !!intervalId || s.active }
-  } catch { return { active: false } }
+    return { ...s, active: !!intervalId || s.active, count }
+  } catch { return { active: false, count: 0 } }
 }
 
 function setState(s) {
@@ -54,10 +55,13 @@ async function emit(type) {
     lat: pos?.lat,
     lng: pos?.lng
   })
+  count++
+  notify()
 }
 
 export async function startBeacon({ kind = 'sos', periodMs = 30000 } = {}) {
   stopBeacon()
+  count = 0
   await emit(kind)
   intervalId = setInterval(() => emit(kind).catch(() => {}), periodMs)
   setState({ active: true, kind, periodMs, startedAt: Date.now() })
@@ -67,5 +71,6 @@ export async function startBeacon({ kind = 'sos', periodMs = 30000 } = {}) {
 export function stopBeacon() {
   if (intervalId) { clearInterval(intervalId); intervalId = null }
   setState({ active: false })
+  count = 0
   notify()
 }
