@@ -108,6 +108,7 @@ export default function Map() {
             'flood', '#2A8FD6',
             'blocked', '#E0A02A',
             'safe', '#2F9E44',
+            'quake', '#8C5AD6',
             '#C4A882'
           ],
           'circle-stroke-width': 2,
@@ -277,6 +278,7 @@ export default function Map() {
       flood: { emoji: '🌊', label: 'Sel / su' },
       blocked: { emoji: '🚧', label: 'Yol kapalı' },
       safe: { emoji: '✅', label: 'Güvenli alan' },
+      quake: { emoji: '📳', label: 'Sarsıntı hissettim' },
       other: { emoji: '❕', label: 'Diğer' }
     }
     src.setData({

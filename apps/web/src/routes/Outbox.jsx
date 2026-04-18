@@ -13,6 +13,7 @@ const TYPE_META = {
   flood: { emoji: '🌊', label: 'Sel' },
   blocked: { emoji: '🚧', label: 'Yol kapalı' },
   safe: { emoji: '✅', label: 'Güvenli' },
+  quake: { emoji: '📳', label: 'Sarsıntı' },
   other: { emoji: '❕', label: 'Diğer' }
 }
 
