@@ -37,6 +37,19 @@ export default function Guide() {
     window.speechSynthesis.speak(u)
   }
 
+  function speakAll() {
+    if (!('speechSynthesis' in window)) return
+    window.speechSynthesis.cancel()
+    STEPS.forEach((s, i) => {
+      const u = new SpeechSynthesisUtterance(`${i + 1}. ${s.title}. ${s.body}`)
+      u.lang = 'tr-TR'
+      u.rate = 0.95
+      if (i === STEPS.length - 1) u.onend = () => setSpeaking(null)
+      window.speechSynthesis.speak(u)
+    })
+    setSpeaking('all')
+  }
+
   function stop() {
     window.speechSynthesis.cancel()
     setSpeaking(null)
@@ -46,6 +59,15 @@ export default function Guide() {
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Sesli Rehber</h2>
       <p className="text-sm opacity-70">Cihazın kendi sesi ile çalar, internet gerekmez.</p>
+
+      <div className="flex gap-2">
+        <button
+          onClick={speaking === 'all' ? stop : speakAll}
+          className="flex-1 rounded-xl p-3 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold text-sm"
+        >
+          {speaking === 'all' ? '⏹ Durdur' : '▶ Tüm rehberi oku'}
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 gap-2">
         <a href="/sessiz-sos" className="rounded-xl p-3 bg-[--color-fener-help] text-white font-bold text-center text-sm">
