@@ -64,7 +64,15 @@ export async function prefetchTiles({ onProgress, signal } = {}) {
 
   const workers = Array.from({ length: CONCURRENCY }, worker)
   await Promise.all(workers)
+  try { localStorage.setItem('fener.prefetchAt.v1', String(Date.now())) } catch { /* noop */ }
   return { total, done, failed }
+}
+
+export function lastPrefetchAt() {
+  try {
+    const v = Number(localStorage.getItem('fener.prefetchAt.v1'))
+    return Number.isFinite(v) && v > 0 ? v : null
+  } catch { return null }
 }
 
 export function estimatedSizeMB() {

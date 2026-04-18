@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SCALES, getScale, setScale, getContrast, setContrast } from '../lib/a11y.js'
-import { prefetchTiles, estimatedSizeMB } from '../lib/tilePrefetch.js'
+import { prefetchTiles, estimatedSizeMB, lastPrefetchAt } from '../lib/tilePrefetch.js'
 import { ensureIdentity, getIdentity, forgetIdentity } from '../lib/crypto.js'
 import { db } from '../lib/db.js'
 import { exportAll, downloadBackup, importBackup } from '../lib/backup.js'
@@ -140,6 +140,7 @@ export default function Settings() {
             bile ekranda kalır. (~{estimatedSizeMB().toFixed(1)} MB, OSM raster)
           </div>
           <StorageInfo needMB={estimatedSizeMB()} />
+          <LastPrefetch />
           {prefetch?.running && (
             <div>
               <div className="flex justify-between text-xs mb-1">
@@ -309,6 +310,23 @@ function StorageInfo({ needMB }) {
     <div className={`text-xs ${tight ? 'text-[--color-fener-help]' : 'opacity-70'}`}>
       Depolama: {info.usedMB.toFixed(1)} / {info.quotaMB.toFixed(0)} MB
       {tight && ' · yer yetersiz olabilir'}
+    </div>
+  )
+}
+
+function LastPrefetch() {
+  const ts = lastPrefetchAt()
+  if (!ts) return (
+    <div className="text-xs opacity-60">Henüz indirilmedi.</div>
+  )
+  const ms = Date.now() - ts
+  const d = Math.floor(ms / 86400000)
+  const h = Math.floor(ms / 3600000)
+  const stale = d >= 30
+  const rel = d > 0 ? `${d}g önce` : h > 0 ? `${h}sa önce` : 'az önce'
+  return (
+    <div className={`text-xs ${stale ? 'text-[--color-fener-help]' : 'opacity-70'}`}>
+      Son indirme: {rel}{stale ? ' · yenilemeni öneririm' : ''}
     </div>
   )
 }
