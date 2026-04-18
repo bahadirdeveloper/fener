@@ -7,6 +7,7 @@ import { exportAll, downloadBackup, importBackup } from '../lib/backup.js'
 import { ensureNotifyPerm, hasNotify } from '../lib/notify.js'
 import { isEnergySave, setEnergySave } from '../lib/prefs.js'
 import InstallButton from '../components/InstallButton.jsx'
+import SelfTest from '../components/SelfTest.jsx'
 import { useTranslation } from 'react-i18next'
 import i18n from '../i18n/index.js'
 
@@ -114,6 +115,10 @@ export default function Settings() {
             className="w-6 h-6"
           />
         </label>
+      </Section>
+
+      <Section title="Kendini test et">
+        <SelfTest />
       </Section>
 
       <Section title="Bildirimler">
