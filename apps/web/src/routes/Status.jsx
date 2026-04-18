@@ -69,19 +69,19 @@ export default function Status() {
       </div>
 
       <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] flex flex-col gap-2">
-        <div className="text-xs opacity-70">Mesajınız</div>
-        <pre className="whitespace-pre-wrap text-sm font-sans">{text}</pre>
-        <div className="flex gap-1 text-xs">
+        <div className="text-sm font-semibold opacity-90">Gönderilecek mesaj</div>
+        <pre className="whitespace-pre-wrap text-base font-sans leading-relaxed">{text}</pre>
+        <div className="flex gap-2 text-sm">
           <button
             onClick={() => { navigator.clipboard?.writeText(text); }}
-            className="flex-1 py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold"
+            className="flex-1 py-3 rounded-xl bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold min-h-[48px]"
           >
             📋 Kopyala
           </button>
           {typeof navigator !== 'undefined' && navigator.share && (
             <button
               onClick={() => navigator.share({ text, title: title }).catch(() => {})}
-              className="flex-1 py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold"
+              className="flex-1 py-3 rounded-xl bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold min-h-[48px]"
             >
               ↗ Paylaş
             </button>
@@ -97,28 +97,28 @@ export default function Status() {
 
       {links.length > 0 ? (
         <div className="flex flex-col gap-2">
-          <div className="text-sm opacity-70">Ailene gönder</div>
+          <div className="text-base font-semibold">Ailene gönder</div>
           {links.map((l, i) => (
             <a
               key={i}
               href={l.url}
               target="_blank"
               rel="noreferrer"
-              className="rounded-xl p-4 bg-[--color-fener-ok] text-white font-semibold text-center"
+              className="rounded-2xl py-4 bg-[--color-fener-ok] text-white font-bold text-center text-lg min-h-[56px] flex items-center justify-center"
             >
               WhatsApp · {l.name}
             </a>
           ))}
           <a
             href={smsLink('', text)}
-            className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-center font-semibold"
+            className="rounded-2xl py-4 bg-[--color-fener-card] border border-[--color-fener-border] text-center font-semibold text-base min-h-[52px] flex items-center justify-center"
           >
             SMS olarak paylaş
           </a>
         </div>
       ) : (
-        <div className="text-sm opacity-70">
-          Aile kişileri ekli değil. <a href="/aile" className="underline">Aile ekle →</a>
+        <div className="text-base opacity-80 p-4 rounded-xl bg-[--color-fener-card] border border-[--color-fener-border]">
+          Aile kişisi yok. <a href="/aile" className="underline text-[--color-fener-gold] font-semibold">Aile ekle →</a>
         </div>
       )}
 
