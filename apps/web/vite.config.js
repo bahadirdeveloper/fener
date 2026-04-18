@@ -2,8 +2,20 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { execSync } from 'node:child_process'
+
+function buildInfo() {
+  let sha = 'dev'
+  try { sha = execSync('git rev-parse --short HEAD').toString().trim() } catch { /* noop */ }
+  return { sha, builtAt: new Date().toISOString() }
+}
+const BUILD = buildInfo()
 
 export default defineConfig({
+  define: {
+    __BUILD_SHA__: JSON.stringify(BUILD.sha),
+    __BUILD_AT__: JSON.stringify(BUILD.builtAt)
+  },
   plugins: [
     react(),
     tailwindcss(),

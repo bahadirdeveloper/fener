@@ -245,6 +245,19 @@ export default function Settings() {
           {t('footer') /* noop i18n guard */}
         </div>
       </Section>
+
+      <BuildInfo />
+    </div>
+  )
+}
+
+function BuildInfo() {
+  const sha = typeof __BUILD_SHA__ !== 'undefined' ? __BUILD_SHA__ : 'dev'
+  const builtAt = typeof __BUILD_AT__ !== 'undefined' ? __BUILD_AT__ : ''
+  const date = builtAt ? new Date(builtAt).toLocaleString() : ''
+  return (
+    <div className="text-center text-xs opacity-50 pt-2">
+      Sürüm {sha}{date && ` · ${date}`}
     </div>
   )
 }
