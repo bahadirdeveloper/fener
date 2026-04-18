@@ -59,8 +59,8 @@ export default function Report() {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">{t('page.report')}</h2>
-      <p className="text-sm opacity-70">
-        Konumunu ve durumu kaydet. Harita'da pin olarak görünür.
+      <p className="text-base opacity-80">
+        Ne gördün? Seç, konum otomatik eklensin. Haritada herkes görür.
       </p>
 
       <div className="grid grid-cols-2 gap-2">
@@ -68,10 +68,10 @@ export default function Report() {
           <button
             key={k.id}
             onClick={() => setKind(k.id)}
-            className={`rounded-xl p-4 font-semibold text-left flex items-center gap-3 ${kind === k.id ? 'ring-2 ring-[--color-fener-gold]' : 'border border-[--color-fener-border]'} bg-[--color-fener-card]`}
+            className={`rounded-xl p-4 font-semibold text-left flex items-center gap-3 min-h-[72px] ${kind === k.id ? 'ring-2 ring-[--color-fener-gold]' : 'border border-[--color-fener-border]'} bg-[--color-fener-card]`}
           >
-            <span className="text-2xl" aria-hidden>{k.emoji}</span>
-            <span className="text-sm">{k.label}</span>
+            <span className="text-3xl" aria-hidden>{k.emoji}</span>
+            <span className="text-base leading-tight">{k.label}</span>
           </button>
         ))}
       </div>
@@ -79,9 +79,9 @@ export default function Report() {
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        placeholder="Kısa not (opsiyonel)"
+        placeholder="Kısa not yazabilirsin (zorunlu değil)"
         rows={3}
-        className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm"
+        className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-base"
       />
 
       {err && (
@@ -91,9 +91,9 @@ export default function Report() {
       <button
         onClick={submit}
         disabled={busy}
-        className="rounded-xl p-4 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold disabled:opacity-50"
+        className="rounded-2xl py-4 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold text-lg disabled:opacity-50 min-h-[56px]"
       >
-        {busy ? 'Kaydediliyor…' : 'Raporu kaydet'}
+        {busy ? 'Kaydediliyor…' : '✓ Raporu kaydet'}
       </button>
 
       {past.length > 0 && (
