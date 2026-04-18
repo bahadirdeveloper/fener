@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
 
 const FREQ = 3000
 const PATTERN = [
@@ -53,6 +54,7 @@ export default function Whistle() {
   function start() {
     if (playing) return
     setPlaying(true)
+    acquireWakeLock()
     loop()
   }
 
@@ -63,6 +65,7 @@ export default function Whistle() {
     try { gainRef.current?.disconnect() } catch { /* noop */ }
     oscRef.current = null
     gainRef.current = null
+    releaseWakeLock()
   }
 
   return (
