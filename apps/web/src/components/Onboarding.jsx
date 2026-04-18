@@ -18,6 +18,18 @@ const STEPS = [
     action: 'location'
   },
   {
+    emoji: '⚠️',
+    title: 'Tehlike bölgeleri',
+    body: 'Silifke\'de sel (Göksu), heyelan (Akdere) ve kıyı (tsunami) risk alanları haritada işaretli. Bulunduğun nokta tehlikeliyse uyarı alırsın.',
+    primary: 'Anladım'
+  },
+  {
+    emoji: '🗺️',
+    title: 'Harita offline',
+    body: 'Harita sayfasında bir kez aç — tiles cihazına iner. Sonra internet olmasa da Silifke merkezini görürsün.',
+    primary: 'Tamam'
+  },
+  {
     emoji: '🪪',
     title: 'Acil bilgi kartı',
     body: 'Kan grubu, alerji, kullandığın ilaç… Kurtarıcılar için hayati bilgi. 1 dakikada doldur.',
