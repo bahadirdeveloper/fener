@@ -59,21 +59,35 @@ export default function Family() {
       </form>
 
       <ul className="flex flex-col gap-2">
-        {family.map((m) => (
-          <li key={m.id} className="flex items-center gap-3 rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border]">
-            <div className="flex-1">
-              <div className="font-semibold">{m.name}</div>
-              <div className="text-xs opacity-70">{m.relation} · {m.phone || '—'}</div>
-            </div>
-            <button
-              onClick={() => remove(m.id)}
-              className="text-sm text-[--color-fener-help] px-3 py-2"
-              aria-label={`${m.name} sil`}
-            >
-              Sil
-            </button>
-          </li>
-        ))}
+        {family.map((m) => {
+          const phone = (m.phone || '').replace(/\s+/g, '')
+          const msg = encodeURIComponent('Ben iyiyim. — Fener')
+          const waPhone = phone.replace(/^0/, '90').replace(/[^0-9+]/g, '')
+          return (
+            <li key={m.id} className="flex flex-col gap-2 rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border]">
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <div className="font-semibold">{m.name}</div>
+                  <div className="text-xs opacity-70">{m.relation} · {m.phone || '—'}</div>
+                </div>
+                <button
+                  onClick={() => remove(m.id)}
+                  className="text-sm text-[--color-fener-help] px-3 py-2"
+                  aria-label={`${m.name} sil`}
+                >
+                  Sil
+                </button>
+              </div>
+              {phone && (
+                <div className="flex gap-1 text-xs">
+                  <a href={`tel:${phone}`} className="flex-1 text-center py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold">📞 Ara</a>
+                  <a href={`sms:${phone}?body=${msg}`} className="flex-1 text-center py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold">💬 SMS</a>
+                  <a href={`https://wa.me/${waPhone}?text=${msg}`} target="_blank" rel="noreferrer" className="flex-1 text-center py-2 rounded-lg bg-[--color-fener-ok] text-white font-semibold">WhatsApp</a>
+                </div>
+              )}
+            </li>
+          )
+        })}
         {family.length === 0 && (
           <li className="text-center text-sm opacity-50 py-4">Henüz kimse eklenmedi.</li>
         )}
