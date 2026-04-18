@@ -39,6 +39,10 @@ export default function Home() {
     () => db.outbox.where('type').equals('status:ok').reverse().sortBy('createdAt').then((r) => r[0]),
     []
   )
+  const recentReports = useLiveQuery(
+    () => db.reports.where('createdAt').above(Date.now() - 86400000).count(),
+    []
+  ) ?? 0
 
   function onHelpDown() {
     longFired.current = false
@@ -121,6 +125,14 @@ export default function Home() {
                 aria-label={`Hazırlık yüzde ${kit}`}
               >
                 %{kit}
+              </span>
+            )}
+            {to === '/rapor' && recentReports > 0 && (
+              <span
+                className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[--color-fener-help] text-white font-bold"
+                aria-label={`Son 24 saatte ${recentReports} rapor`}
+              >
+                {recentReports}
               </span>
             )}
           </Link>
