@@ -1,6 +1,30 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../lib/db.js'
 
+const TYPE_META = {
+  ok: { emoji: '✅', label: 'İyiyim' },
+  help: { emoji: '🆘', label: 'Yardım' },
+  sos: { emoji: '🆘', label: 'SOS' },
+  ping: { emoji: '📡', label: 'Ping' },
+  chat: { emoji: '💬', label: 'Mesaj' },
+  voice: { emoji: '🎙️', label: 'Ses' },
+  damage: { emoji: '🏚️', label: 'Yıkık' },
+  fire: { emoji: '🔥', label: 'Yangın' },
+  flood: { emoji: '🌊', label: 'Sel' },
+  blocked: { emoji: '🚧', label: 'Yol kapalı' },
+  safe: { emoji: '✅', label: 'Güvenli' },
+  other: { emoji: '❕', label: 'Diğer' }
+}
+
+function parseType(raw) {
+  if (!raw) return { key: 'other', emoji: '❕', label: 'Bilinmiyor', incoming: false }
+  const incoming = raw.startsWith('ble-in:')
+  const parts = raw.split(':')
+  const key = parts[parts.length - 1]
+  const meta = TYPE_META[key] || { emoji: '❕', label: key }
+  return { key, emoji: meta.emoji, label: meta.label, incoming }
+}
+
 export default function Outbox() {
   const items = useLiveQuery(
     () => db.outbox.orderBy('createdAt').reverse().limit(100).toArray(),
@@ -69,16 +93,17 @@ export default function Outbox() {
             if (typeof m.text === 'string' && m.text.startsWith('{'))
               envelope = JSON.parse(m.text)
           } catch { /* noop */ }
-          const kind = m.type?.split(':')[1] ?? m.type
-          const badge = kind === 'ok' ? 'bg-[--color-fener-ok]' :
-                        kind === 'help' ? 'bg-[--color-fener-help]' :
-                        kind === 'sos' ? 'bg-[--color-fener-help]' :
+          const t = parseType(m.type)
+          const badge = t.key === 'ok' || t.key === 'safe' ? 'bg-[--color-fener-ok]' :
+                        t.key === 'help' || t.key === 'sos' || t.key === 'fire' || t.key === 'damage' ? 'bg-[--color-fener-help]' :
                         'bg-[--color-fener-gold]'
           return (
             <li key={m.id} className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border]">
               <div className="flex items-center justify-between mb-1">
-                <span className={`${badge} text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded text-black`}>
-                  {kind}
+                <span className={`${badge} text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded text-black flex items-center gap-1`}>
+                  <span aria-hidden>{t.emoji}</span>
+                  {t.label}
+                  {t.incoming && <span className="opacity-70">· gelen</span>}
                 </span>
                 <span className="text-xs opacity-60">
                   {new Date(m.createdAt).toLocaleString('tr-TR')}
