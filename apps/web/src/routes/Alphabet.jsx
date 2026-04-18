@@ -35,6 +35,19 @@ export default function Alphabet() {
     window.speechSynthesis.speak(u)
   }
 
+  function shareSpelled() {
+    if (!spelled.length) return
+    const text = spelled
+      .map((s) => s.ch === ' ' ? '/' : `${s.ch.toUpperCase()} (${s.word})`)
+      .join(' ')
+    if (navigator.share) {
+      navigator.share({ text, title: 'Telsiz hecelemesi' }).catch(() => {})
+    } else {
+      navigator.clipboard?.writeText(text)
+      alert('Panoya kopyalandı.')
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">{t('page.alphabet')}</h2>
@@ -47,13 +60,22 @@ export default function Alphabet() {
         placeholder="Ad veya adres"
         className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border]"
       />
-      <button
-        onClick={read}
-        disabled={!spelled.length}
-        className="rounded-xl p-3 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold disabled:opacity-40"
-      >
-        🔊 Oku
-      </button>
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={read}
+          disabled={!spelled.length}
+          className="rounded-xl p-3 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold disabled:opacity-40"
+        >
+          🔊 Oku
+        </button>
+        <button
+          onClick={shareSpelled}
+          disabled={!spelled.length}
+          className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] font-semibold disabled:opacity-40"
+        >
+          ↗ Paylaş
+        </button>
+      </div>
       <ul className="flex flex-col gap-1">
         {spelled.map((s, i) => (
           <li key={i} className="rounded-lg p-2 bg-[--color-fener-card] border border-[--color-fener-border] flex justify-between">
