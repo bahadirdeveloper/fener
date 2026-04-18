@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const CARDS = [
@@ -65,6 +65,43 @@ const CARDS = [
 export default function FirstAid() {
   const { t } = useTranslation()
   const [open, setOpen] = useState(null)
+  const [metronome, setMetronome] = useState(false)
+  const audioRef = useRef(null)
+  const timerRef = useRef(null)
+
+  function stopMetronome() {
+    clearInterval(timerRef.current)
+    timerRef.current = null
+    try { audioRef.current?.close() } catch { /* noop */ }
+    audioRef.current = null
+    setMetronome(false)
+  }
+
+  function startMetronome() {
+    if (metronome) { stopMetronome(); return }
+    const Ctx = window.AudioContext || window.webkitAudioContext
+    if (!Ctx) return
+    const ctx = new Ctx()
+    audioRef.current = ctx
+    const click = () => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.frequency.value = 1000
+      osc.type = 'square'
+      gain.gain.setValueAtTime(0, ctx.currentTime)
+      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.002)
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05)
+      osc.connect(gain).connect(ctx.destination)
+      osc.start()
+      osc.stop(ctx.currentTime + 0.06)
+    }
+    click()
+    // 110 BPM = 60000/110 ≈ 545 ms (100-120 CPR range ortası)
+    timerRef.current = setInterval(click, 545)
+    setMetronome(true)
+  }
+
+  useEffect(() => () => stopMetronome(), [])
 
   return (
     <div className="flex flex-col gap-3">
@@ -84,9 +121,21 @@ export default function FirstAid() {
             <span className="opacity-60">{open === c.id ? '▾' : '▸'}</span>
           </button>
           {open === c.id && (
-            <ol className="list-decimal ml-8 pr-4 pb-4 flex flex-col gap-2 text-sm">
-              {c.steps.map((s, i) => <li key={i}>{s}</li>)}
-            </ol>
+            <div className="pb-4">
+              <ol className="list-decimal ml-8 pr-4 flex flex-col gap-2 text-sm">
+                {c.steps.map((s, i) => <li key={i}>{s}</li>)}
+              </ol>
+              {c.id === 'cpr' && (
+                <div className="mx-4 mt-3">
+                  <button
+                    onClick={startMetronome}
+                    className={`w-full rounded-lg py-3 font-bold ${metronome ? 'bg-[--color-fener-help] text-white animate-pulse' : 'bg-[--color-fener-gold] text-[--color-fener-bg]'}`}
+                  >
+                    {metronome ? '⏹ Metronomu durdur' : '🥁 110 BPM metronom (CPR temposu)'}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       ))}
