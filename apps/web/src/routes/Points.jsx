@@ -39,6 +39,28 @@ export default function Points() {
     await db.meetingPoints.delete(id)
   }
 
+  async function importGeoJson(file) {
+    try {
+      const text = await file.text()
+      const obj = JSON.parse(text)
+      const feats = Array.isArray(obj?.features) ? obj.features : []
+      let added = 0
+      for (const f of feats) {
+        const coords = f?.geometry?.coordinates
+        if (f?.geometry?.type !== 'Point' || !Array.isArray(coords) || coords.length < 2) continue
+        const [lng, lat] = coords
+        if (typeof lat !== 'number' || typeof lng !== 'number') continue
+        const name = f.properties?.name || f.properties?.label || `Nokta ${Date.now()}`
+        const kind = KINDS.find((k) => k.id === f.properties?.kind)?.id || 'other'
+        await db.meetingPoints.add({ name, kind, lat, lng, priority: 0 })
+        added++
+      }
+      alert(`${added} nokta eklendi.`)
+    } catch (e) {
+      alert('GeoJSON okunamadı: ' + e.message)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Kendi Noktalarım</h2>
@@ -89,6 +111,20 @@ export default function Points() {
           Ekle
         </button>
       </form>
+
+      <label className="rounded-lg p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm font-semibold text-center cursor-pointer">
+        📥 GeoJSON dosyasından içe aktar
+        <input
+          type="file"
+          accept=".geojson,application/geo+json,application/json"
+          hidden
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            if (f) importGeoJson(f)
+            e.target.value = ''
+          }}
+        />
+      </label>
 
       <ul className="flex flex-col gap-2">
         {points.map((p) => {
