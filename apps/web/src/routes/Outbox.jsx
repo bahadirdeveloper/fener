@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../lib/db.js'
 
@@ -26,11 +27,26 @@ function parseType(raw) {
   return { key, emoji: meta.emoji, label: meta.label, incoming }
 }
 
+const FILTERS = [
+  { id: 'all', label: 'Tümü' },
+  { id: 'pending', label: 'Bekleyen' },
+  { id: 'sent', label: 'Gönderilen' },
+  { id: 'incoming', label: 'Gelen' }
+]
+
 export default function Outbox() {
+  const [filter, setFilter] = useState('all')
   const items = useLiveQuery(
     () => db.outbox.orderBy('createdAt').reverse().limit(100).toArray(),
     []
   ) ?? []
+
+  const filtered = items.filter((m) => {
+    if (filter === 'pending') return m.status !== 'sent'
+    if (filter === 'sent') return m.status === 'sent'
+    if (filter === 'incoming') return typeof m.type === 'string' && m.type.startsWith('ble-in:')
+    return true
+  })
 
   async function clearAll() {
     if (!confirm('Tüm outbox silinsin mi?')) return
@@ -81,14 +97,26 @@ export default function Outbox() {
         Son 100 kayıt. Faz 2'de BLE/LoRa ağa gönderilecek.
       </p>
 
-      {items.length === 0 && (
+      <div className="flex gap-1 overflow-x-auto -mx-1 px-1">
+        {FILTERS.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => setFilter(f.id)}
+            className={`text-xs px-3 py-1 rounded-full whitespace-nowrap ${filter === f.id ? 'bg-[--color-fener-gold] text-[--color-fener-bg] font-semibold' : 'bg-[--color-fener-card] border border-[--color-fener-border]'}`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 && (
         <div className="text-sm opacity-50 text-center py-10">
-          Henüz mesaj yok.
+          {items.length === 0 ? 'Henüz mesaj yok.' : 'Bu filtrede kayıt yok.'}
         </div>
       )}
 
       <ul className="flex flex-col gap-2">
-        {items.map((m) => {
+        {filtered.map((m) => {
           let envelope = null
           try {
             if (typeof m.text === 'string' && m.text.startsWith('{'))
