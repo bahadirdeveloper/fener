@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, Link } from 'react-router-dom'
 import OnlineBadge from './OnlineBadge.jsx'
+import BatteryBadge from './BatteryBadge.jsx'
 import { onBeaconChange, getState as getBeaconState, stopBeacon } from '../lib/beacon.js'
 
 export default function Layout() {
@@ -18,6 +19,7 @@ export default function Layout() {
         </Link>
         <div className="flex items-center gap-3">
           <OnlineBadge />
+          <BatteryBadge />
           <Link to="/ayarlar" aria-label="Ayarlar" className="text-xl leading-none">⚙️</Link>
         </div>
       </header>
