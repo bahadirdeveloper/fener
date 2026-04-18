@@ -48,3 +48,6 @@ apps/web/public/tiles/*.mbtiles
 # Firmware build
 firmware/**/build/
 firmware/**/.pio/
+
+# Claude Code
+.claude/
