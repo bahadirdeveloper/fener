@@ -246,6 +246,32 @@ export default function Settings() {
         </div>
       </Section>
 
+      <Section title="Hakkında">
+        <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-sm flex flex-col gap-2">
+          <div className="text-xs opacity-80">
+            Fener açık kaynak, Apache-2.0 lisanslıdır. Silifke Teknoloji Topluluğu tarafından geliştirilir; katkıya açıktır.
+          </div>
+          <div className="flex flex-col gap-2">
+            <a
+              href="https://github.com/bahadirdeveloper/fener"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg py-2 px-3 bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold text-center"
+            >
+              GitHub deposu ↗
+            </a>
+            <a
+              href="https://github.com/bahadirdeveloper/fener/issues/new"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg py-2 px-3 bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold text-center"
+            >
+              Hata bildir / öneri ↗
+            </a>
+          </div>
+        </div>
+      </Section>
+
       <BuildInfo />
     </div>
   )
