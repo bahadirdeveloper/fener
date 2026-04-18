@@ -62,9 +62,25 @@ export default function Status() {
         <span>{title}</span>
       </div>
 
-      <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border]">
-        <div className="text-xs opacity-70 mb-1">Mesajınız</div>
+      <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] flex flex-col gap-2">
+        <div className="text-xs opacity-70">Mesajınız</div>
         <pre className="whitespace-pre-wrap text-sm font-sans">{text}</pre>
+        <div className="flex gap-1 text-xs">
+          <button
+            onClick={() => { navigator.clipboard?.writeText(text); }}
+            className="flex-1 py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold"
+          >
+            📋 Kopyala
+          </button>
+          {typeof navigator !== 'undefined' && navigator.share && (
+            <button
+              onClick={() => navigator.share({ text, title: title }).catch(() => {})}
+              className="flex-1 py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold"
+            >
+              ↗ Paylaş
+            </button>
+          )}
+        </div>
       </div>
 
       {error && (
