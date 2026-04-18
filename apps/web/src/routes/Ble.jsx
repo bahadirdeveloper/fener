@@ -84,6 +84,22 @@ export default function Ble() {
     setChatInput('')
   }
 
+  async function drainOutbox() {
+    if (!conn?.tx) return
+    const pending = await db.outbox.where('status').notEqual('sent').and((x) => !x.incoming).toArray()
+    let n = 0
+    for (const item of pending) {
+      try {
+        let payload
+        try { payload = JSON.parse(item.text) } catch { payload = { kind: item.type, text: item.text } }
+        await send(conn.tx, payload)
+        await db.outbox.update(item.id, { status: 'sent', sentAt: Date.now() })
+        n++
+      } catch { /* skip failed */ }
+    }
+    setMessages((m) => [{ kind: 'info', body: JSON.stringify({ text: `${n} mesaj gönderildi` }), outgoing: true, verified: true, ts: Date.now() }, ...m].slice(0, 50))
+  }
+
   async function sendQuickOk() {
     if (!conn?.tx) return
     const env = await signMessage({ kind: 'ok', text: 'Ben iyiyim', t: Date.now() })
@@ -137,6 +153,9 @@ export default function Ble() {
               ✅ Ben iyiyim
             </button>
           </div>
+          <button onClick={drainOutbox} className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-gold] text-sm font-semibold">
+            📦 Bekleyen outbox'ı bu cihaza gönder
+          </button>
           <div className="flex gap-2">
             <input
               value={chatInput}
