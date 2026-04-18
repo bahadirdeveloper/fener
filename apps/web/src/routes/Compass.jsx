@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { getPosition } from '../lib/location.js'
-import { nearestShelter, haversineKm } from '../data/shelters.js'
+import { nearestShelter, haversineKm, SHELTERS } from '../data/shelters.js'
+import { db } from '../lib/db.js'
 
 function bearing(from, to) {
   const toRad = (d) => d * Math.PI / 180
@@ -18,10 +20,34 @@ function bearing(from, to) {
 export default function Compass() {
   const { t } = useTranslation()
   const [pos, setPos] = useState(null)
-  const [target, setTarget] = useState(null)
+  const [targetId, setTargetId] = useState(null)
   const [heading, setHeading] = useState(null)
   const [permErr, setPermErr] = useState('')
   const [listening, setListening] = useState(false)
+  const userPoints = useLiveQuery(() => db.meetingPoints.toArray(), []) ?? []
+
+  const options = useMemo(() => {
+    const a = SHELTERS.features.map((f) => ({
+      id: `s-${f.properties.id}`,
+      name: f.properties.name,
+      kind: 'shelter',
+      coord: f.geometry.coordinates
+    }))
+    const b = userPoints.map((p) => ({
+      id: `u-${p.id}`,
+      name: p.name,
+      kind: 'user',
+      coord: [p.lng, p.lat]
+    }))
+    const list = [...a, ...b]
+    if (pos) {
+      list.forEach((o) => { o.distanceKm = haversineKm([pos.lng, pos.lat], o.coord) })
+      list.sort((x, y) => x.distanceKm - y.distanceKm)
+    }
+    return list
+  }, [userPoints, pos])
+
+  const target = options.find((o) => o.id === targetId) || options[0]
 
   useEffect(() => {
     (async () => {
@@ -29,11 +55,7 @@ export default function Compass() {
         const p = await getPosition()
         setPos(p)
         const near = nearestShelter([p.lng, p.lat])
-        setTarget({
-          name: near.feature.properties.name,
-          coord: near.feature.geometry.coordinates,
-          distanceKm: near.distanceKm
-        })
+        setTargetId(`s-${near.feature.properties.id}`)
       } catch (e) {
         setPermErr(e.message || 'Konum alınamadı')
       }
@@ -58,7 +80,7 @@ export default function Compass() {
     }
   }
 
-  const bear = pos && target ? bearing([pos.lng, pos.lat], target.coord) : null
+  const bear = pos && target?.coord ? bearing([pos.lng, pos.lat], target.coord) : null
   const rel = bear != null && heading != null ? (bear - heading + 360) % 360 : bear
 
   return (
@@ -68,10 +90,26 @@ export default function Compass() {
 
       {target && (
         <div className="text-center">
-          <div className="text-xs uppercase tracking-wider opacity-70">En yakın toplanma</div>
+          <div className="text-xs uppercase tracking-wider opacity-70">Hedef</div>
           <div className="text-lg font-bold">{target.name}</div>
-          <div className="text-sm opacity-80">{target.distanceKm.toFixed(2)} km · ~{Math.round(target.distanceKm * 12)} dk</div>
+          {target.distanceKm != null && (
+            <div className="text-sm opacity-80">{target.distanceKm.toFixed(2)} km · ~{Math.round(target.distanceKm * 12)} dk</div>
+          )}
         </div>
+      )}
+
+      {options.length > 1 && (
+        <select
+          value={target?.id || ''}
+          onChange={(e) => setTargetId(e.target.value)}
+          className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm"
+        >
+          {options.map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.kind === 'user' ? '⭐ ' : '📍 '}{o.name}{o.distanceKm != null ? ` · ${o.distanceKm.toFixed(2)} km` : ''}
+            </option>
+          ))}
+        </select>
       )}
 
       <div className="mx-auto w-64 h-64 rounded-full bg-[--color-fener-card] border border-[--color-fener-border] flex items-center justify-center relative">
