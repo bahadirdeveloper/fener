@@ -2,7 +2,7 @@
 // Şimdilik sadece outbox'a yazar (Faz 2'de BLE + LoRa ile gerçek broadcast).
 
 import { pushOutbox, getProfile } from './db.js'
-import { getPosition } from './location.js'
+import { getPosition, getLastKnownPosition } from './location.js'
 import { signMessage } from './sign.js'
 
 const STATE_KEY = 'fener.beacon.v1'
@@ -38,6 +38,7 @@ async function emit(type) {
   const p = await getProfile()
   let pos = null
   try { pos = await getPosition({ timeout: 5000, maximumAge: 15000 }) } catch { /* ignore */ }
+  if (!pos) pos = getLastKnownPosition()
   const payload = {
     v: 1,
     kind: type, // 'sos' | 'ok-beacon'

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { getProfile } from '../lib/db.js'
-import { getPosition } from '../lib/location.js'
+import { getPosition, getLastKnownPosition } from '../lib/location.js'
 import { buildStatusText, familyWhatsAppLinks, queueStatus, smsLink } from '../lib/outbox.js'
 import { startBeacon, stopBeacon, onBeaconChange, getState as getBeaconState } from '../lib/beacon.js'
 import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
@@ -24,7 +24,13 @@ export default function Status() {
         const pos = await getPosition()
         setLoc(pos)
       } catch (e) {
-        setError(e.message || 'Konum alınamadı')
+        const last = getLastKnownPosition()
+        if (last) {
+          setLoc(last)
+          setError('Canlı konum yok; son bilinen nokta kullanılıyor.')
+        } else {
+          setError(e.message || 'Konum alınamadı')
+        }
       }
     })()
     const off = onBeaconChange(setBeacon)
