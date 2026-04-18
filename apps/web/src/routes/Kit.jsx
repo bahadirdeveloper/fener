@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { KIT_KEY as KEY, readKit } from '../lib/kit.js'
 
 const SECTIONS = [
@@ -46,6 +47,7 @@ function save(s) {
 }
 
 export default function Kit() {
+  const { t } = useTranslation()
   const [state, setState] = useState(() => readKit())
 
   useEffect(() => { save(state) }, [state])
@@ -79,7 +81,7 @@ export default function Kit() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Afet hazırlığı</h2>
+      <h2 className="text-2xl font-bold">{t('page.kit')}</h2>
       <p className="text-sm opacity-75">
         AFAD ve Kızılay'ın 72 saat hayatta kalma önerilerine göre hazırlandı. Hazırlığını kontrol et.
       </p>

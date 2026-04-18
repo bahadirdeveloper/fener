@@ -39,7 +39,8 @@
     "firstAid": "First aid",
     "compass": "Compass",
     "alphabet": "Radio alphabet",
-    "scan": "Scan QR"
+    "scan": "Scan QR",
+    "kit": "Disaster preparedness"
   },
   "footer": "Fener · Silifke Tech Community · Apache-2.0"
 }

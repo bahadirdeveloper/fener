@@ -39,7 +39,8 @@
     "firstAid": "İlk yardım",
     "compass": "Pusula",
     "alphabet": "Telsiz alfabesi",
-    "scan": "QR Oku"
+    "scan": "QR Oku",
+    "kit": "Afet hazırlığı"
   },
   "footer": "Fener · Silifke Teknoloji Topluluğu · Apache-2.0"
 }
