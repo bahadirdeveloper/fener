@@ -59,6 +59,32 @@ const CARDS = [
       'Ağızdan sıvı verme.',
       'Nefes durursa CPR başlat, 112 ara.'
     ]
+  },
+  {
+    id: 'choke',
+    title: 'Boğulma (Heimlich)',
+    emoji: '🫁',
+    steps: [
+      'Öksürebiliyorsa karışma — kendi öksürüğü en etkilisi.',
+      'Sessizleştiyse arkasına geç, bir elini yumruk yap göbek üstüne koy.',
+      'Diğer elinle kavra, içe ve yukarı doğru hızlı çek. 5 kez.',
+      'Çıkmadıysa iki kürek kemiği arasına 5 sert darbe; dönüşümlü devam et.',
+      'Bayılırsa yere yatır, CPR başlat ve 112 ara.',
+      'Bebek (<1 yaş): yüzüstü kola yatır, 5 sırt darbesi + 5 göğüs bastırma.'
+    ]
+  },
+  {
+    id: 'hypo',
+    title: 'Hipotermi / Donma',
+    emoji: '🥶',
+    steps: [
+      'Rüzgar ve ıslaklıktan koru; ıslak kıyafeti kuru ile değiştir.',
+      'Battaniye/uyku tulumu ile sar, başını da ört (ısı buradan kaçar).',
+      'Bilinçliyse ılık tatlı içecek ver — alkol/kafein YOK.',
+      'Yavaş ısıt; doğrudan ateş/sıcak suya temas ettirme.',
+      'Donmuş uzvu ovma, patlatma; 37–39°C ılık suya batır.',
+      'Titreme durduysa durum ağır — 112, yatay taşı, sarsma.'
+    ]
   }
 ]
 
