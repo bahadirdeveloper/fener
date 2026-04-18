@@ -62,6 +62,25 @@ export default function Kit() {
   const done = allItems.filter((it) => state[it.id]).length
   const pct = Math.round((done / allItems.length) * 100)
 
+  function shareProgress() {
+    const missing = SECTIONS.flatMap((s) =>
+      s.items.filter((it) => !state[it.id]).map((it) => `• ${it.label}`)
+    )
+    const text = [
+      `Fener afet hazırlığım: %${pct} (${done}/${allItems.length})`,
+      missing.length > 0 ? '\nEksik:' : '',
+      ...missing.slice(0, 10),
+      missing.length > 10 ? `… ve ${missing.length - 10} madde daha` : '',
+      '\n— Hazır mısın? github.com/bahadirdeveloper/fener'
+    ].filter(Boolean).join('\n')
+    if (navigator.share) {
+      navigator.share({ text, title: 'Fener hazırlığım' }).catch(() => {})
+    } else {
+      navigator.clipboard?.writeText(text)
+      alert('Panoya kopyalandı.')
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Afet hazırlığı</h2>
@@ -69,8 +88,8 @@ export default function Kit() {
         AFAD ve Kızılay'ın 72 saat hayatta kalma önerilerine göre hazırlandı. Hazırlığını kontrol et.
       </p>
 
-      <div className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border]">
-        <div className="flex justify-between text-sm mb-2">
+      <div className="rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border] flex flex-col gap-2">
+        <div className="flex justify-between text-sm">
           <span className="font-semibold">Hazırlık</span>
           <span>{done}/{allItems.length} · {pct}%</span>
         </div>
@@ -80,6 +99,12 @@ export default function Kit() {
             style={{ width: `${pct}%` }}
           />
         </div>
+        <button
+          onClick={shareProgress}
+          className="text-xs py-2 rounded-lg bg-[--color-fener-bg] border border-[--color-fener-border] font-semibold mt-1"
+        >
+          ↗ Aileme gönder (eksikleriyle)
+        </button>
       </div>
 
       {SECTIONS.map((sec) => (
