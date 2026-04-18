@@ -6,6 +6,15 @@ import { verify } from '../lib/crypto.js'
 import { pushOutbox, db } from '../lib/db.js'
 import { useLiveQuery } from 'dexie-react-hooks'
 
+function fmtAgo(ts) {
+  if (!ts) return '—'
+  const s = Math.floor((Date.now() - ts) / 1000)
+  if (s < 60) return `${s}s önce`
+  if (s < 3600) return `${Math.floor(s / 60)}dk önce`
+  if (s < 86400) return `${Math.floor(s / 3600)}sa önce`
+  return `${Math.floor(s / 86400)}g önce`
+}
+
 export default function Ble() {
   const [supported] = useState(isBleSupported())
   const [available, setAvailable] = useState(null)
@@ -150,9 +159,14 @@ export default function Ble() {
           <div className="text-xs opacity-70 mb-1">Bilinen cihazlar</div>
           <ul className="flex flex-col gap-1">
             {knownPeers.map((p) => (
-              <li key={p.id} className="rounded-lg p-2 bg-[--color-fener-card] border border-[--color-fener-border] text-xs flex justify-between">
-                <span>📡 {p.name}</span>
-                <span className="opacity-60">{new Date(p.lastSeen).toLocaleTimeString('tr-TR')}</span>
+              <li key={p.id} className="rounded-lg p-2 bg-[--color-fener-card] border border-[--color-fener-border] text-xs flex items-center justify-between gap-2">
+                <span className="truncate">📡 {p.name}</span>
+                <span className="opacity-60 whitespace-nowrap">{fmtAgo(p.lastSeen)}</span>
+                <button
+                  onClick={() => db.nodes.delete(p.id)}
+                  className="text-[--color-fener-help] px-1"
+                  aria-label="Sil"
+                >✕</button>
               </li>
             ))}
           </ul>
