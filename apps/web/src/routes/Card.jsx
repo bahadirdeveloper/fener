@@ -50,8 +50,8 @@ export default function Card() {
         <h2 className="text-2xl font-bold">Acil Bilgi Kartım</h2>
         <a href="/kart/goster" className="text-sm underline text-[--color-fener-gold]">QR Göster →</a>
       </div>
-      <p className="text-sm opacity-70">
-        Bu bilgi sadece cihazında saklanır. Afet anında kurtarıcılara gösterebilirsin.
+      <p className="text-base opacity-80">
+        Bu bilgi sadece senin telefonunda kalır. Kurtarıcılar QR'ı okutarak görebilir.
       </p>
 
       <Field label="Ad Soyad">
@@ -70,15 +70,15 @@ export default function Card() {
         </Field>
       </div>
 
-      <Field label="Alerjiler">
+      <Field label="Alerjiler" hint="Yoksa boş bırak">
         <textarea rows={2} className="inp" value={form.allergies} onChange={(e) => set('allergies', e.target.value)} placeholder="Penisilin, fındık..." />
       </Field>
 
-      <Field label="Kullandığı İlaçlar">
-        <textarea rows={2} className="inp" value={form.medications} onChange={(e) => set('medications', e.target.value)} placeholder="Doz ve saatiyle" />
+      <Field label="Düzenli kullandığın ilaçlar" hint="Adı ve dozu">
+        <textarea rows={2} className="inp" value={form.medications} onChange={(e) => set('medications', e.target.value)} placeholder="Örn: Tansiyon hapı, günde 1" />
       </Field>
 
-      <Field label="Kronik Hastalıklar">
+      <Field label="Sağlık durumu" hint="Kronik hastalık varsa">
         <textarea rows={2} className="inp" value={form.conditions} onChange={(e) => set('conditions', e.target.value)} placeholder="Diyabet, astım..." />
       </Field>
 
@@ -96,7 +96,7 @@ export default function Card() {
         <textarea rows={2} className="inp" value={form.notes} onChange={(e) => set('notes', e.target.value)} />
       </Field>
 
-      <button type="submit" className="rounded-xl p-4 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold text-lg mt-2">
+      <button type="submit" className="rounded-2xl py-4 bg-[--color-fener-gold] text-[--color-fener-bg] font-bold text-lg mt-2 min-h-[56px]">
         {saved ? '✓ Kaydedildi' : 'Kaydet'}
       </button>
 
@@ -106,9 +106,10 @@ export default function Card() {
           background: var(--color-fener-card);
           border: 1px solid var(--color-fener-border);
           border-radius: 0.75rem;
-          padding: 0.75rem;
+          padding: 0.875rem 1rem;
+          min-height: 52px;
           color: var(--color-fener-cream);
-          font-size: 1rem;
+          font-size: 17px;
         }
         .inp:focus {
           outline: 2px solid var(--color-fener-gold);
@@ -118,10 +119,10 @@ export default function Card() {
   )
 }
 
-function Field({ label, children }) {
+function Field({ label, hint, children }) {
   return (
-    <label className="flex flex-col gap-1">
-      <span className="text-xs opacity-70 uppercase tracking-wider">{label}</span>
+    <label className="flex flex-col gap-1.5">
+      <span className="text-sm font-semibold opacity-90">{label}{hint && <span className="font-normal opacity-60"> — {hint}</span>}</span>
       {children}
     </label>
   )

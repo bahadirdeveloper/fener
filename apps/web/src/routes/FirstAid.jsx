@@ -166,8 +166,9 @@ export default function FirstAid() {
         </div>
       ))}
 
-      <a href="tel:112" className="rounded-xl p-4 bg-[--color-fener-help] text-white font-bold text-center">
-        📞 112'yi ara
+      <a href="tel:112" className="rounded-2xl p-5 bg-[--color-fener-help] text-white font-black text-center text-2xl min-h-[72px] flex items-center justify-center gap-3 shadow-lg sticky bottom-4">
+        <span className="text-3xl" aria-hidden>📞</span>
+        <span>112'yi ara</span>
       </a>
     </div>
   )
