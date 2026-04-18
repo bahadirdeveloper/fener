@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 import { getProfile } from '../lib/db.js'
+import { acquireWakeLock, releaseWakeLock } from '../lib/wakeLock.js'
 
 export default function CardShow() {
   const [profile, setProfile] = useState(null)
@@ -32,12 +33,16 @@ export default function CardShow() {
         })
         setQr(url)
       }
-      // tam ekran parlaklık
+      // tam ekran parlaklık + ekranı kapatma
       try {
         await document.documentElement.requestFullscreen?.()
       } catch { /* noop */ }
+      acquireWakeLock()
     })()
-    return () => { try { document.exitFullscreen?.() } catch { /* noop */ } }
+    return () => {
+      try { document.exitFullscreen?.() } catch { /* noop */ }
+      releaseWakeLock()
+    }
   }, [])
 
   if (!profile) {
