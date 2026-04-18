@@ -6,6 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import QuickDial from '../components/QuickDial.jsx'
 import { startBeacon } from '../lib/beacon.js'
 import { db } from '../lib/db.js'
+import { readKit, kitPct as calcKitPct } from '../lib/kit.js'
 
 function fmtAgo(ms) {
   const s = Math.floor(ms / 1000)
@@ -17,24 +18,13 @@ function fmtAgo(ms) {
   return `${Math.floor(h / 24)}g önce`
 }
 
-function kitPct() {
-  try {
-    const raw = localStorage.getItem('fener.kit.v1')
-    if (!raw) return 0
-    const s = JSON.parse(raw)
-    const TOTAL = 22
-    const done = Object.values(s).filter(Boolean).length
-    return Math.min(100, Math.round((done / TOTAL) * 100))
-  } catch { return 0 }
-}
-
 export default function Home() {
   const nav = useNavigate()
   const { t } = useTranslation()
   const pressTimer = useRef(null)
   const longFired = useRef(false)
   const [kit, setKit] = useState(0)
-  useEffect(() => { setKit(kitPct()) }, [])
+  useEffect(() => { setKit(calcKitPct(readKit())) }, [])
   const lastOk = useLiveQuery(
     () => db.outbox.where('type').equals('status:ok').reverse().sortBy('createdAt').then((r) => r[0]),
     []
