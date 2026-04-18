@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { KIT_KEY as KEY, readKit } from '../lib/kit.js'
+import { KIT_KEY as KEY, readKit, readKitTs, writeKitTs, kitStale } from '../lib/kit.js'
 
 const SECTIONS = [
   {
@@ -46,15 +46,31 @@ function save(s) {
   try { localStorage.setItem(KEY, JSON.stringify(s)) } catch { /* noop */ }
 }
 
+function fmtDate(ts) {
+  if (!ts) return '—'
+  const d = new Date(ts)
+  return d.toLocaleDateString('tr-TR', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+
 export default function Kit() {
   const { t } = useTranslation()
   const [state, setState] = useState(() => readKit())
+  const [ts, setTs] = useState(() => readKitTs())
+  const first = useRef(true)
 
-  useEffect(() => { save(state) }, [state])
+  useEffect(() => {
+    if (first.current) { first.current = false; return }
+    save(state)
+    const now = Date.now()
+    writeKitTs(now)
+    setTs(now)
+  }, [state])
 
   function toggle(id) {
     setState((s) => ({ ...s, [id]: !s[id] }))
   }
+
+  const stale = kitStale(ts)
 
   const allItems = SECTIONS.flatMap((s) => s.items)
   const done = allItems.filter((it) => state[it.id]).length
@@ -103,7 +119,16 @@ export default function Kit() {
         >
           ↗ Aileme gönder (eksikleriyle)
         </button>
+        <div className="text-[11px] opacity-60 mt-1">
+          Son güncelleme: {fmtDate(ts)}
+        </div>
       </div>
+
+      {stale && (
+        <div className="rounded-xl p-3 bg-[--color-fener-help] text-white text-xs font-semibold">
+          ⚠️ 6 aydır güncellenmedi. Su, piller ve ilaç son kullanma tarihlerini kontrol et. Değiştirdikçe maddeyi tıkla — tarih yenilenecek.
+        </div>
+      )}
 
       {SECTIONS.map((sec) => (
         <div key={sec.title} className="flex flex-col gap-2">

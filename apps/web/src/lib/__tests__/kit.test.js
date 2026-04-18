@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { kitDone, kitPct, KIT_TOTAL } from '../kit.js'
+import { kitDone, kitPct, kitStale, KIT_TOTAL, KIT_STALE_MS } from '../kit.js'
 
 describe('kit', () => {
   it('boş state 0%', () => {
@@ -22,5 +22,13 @@ describe('kit', () => {
   })
   it('false değerler sayılmaz', () => {
     expect(kitDone({ a: true, b: false, c: false, d: true })).toBe(2)
+  })
+  it('kitStale: ts yoksa false', () => {
+    expect(kitStale(0)).toBe(false)
+  })
+  it('kitStale: 6 aydan eski ise true', () => {
+    const now = Date.now()
+    expect(kitStale(now - KIT_STALE_MS - 1000, now)).toBe(true)
+    expect(kitStale(now - 1000, now)).toBe(false)
   })
 })
