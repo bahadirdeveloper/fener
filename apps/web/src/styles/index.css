@@ -26,11 +26,16 @@
     background: var(--color-fener-bg);
     color: var(--color-fener-cream);
     font-family: var(--font-sans);
+    font-size: 17px;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: contain;
   }
   button {
     touch-action: manipulation;
+    min-height: 48px;
+  }
+  input, select, textarea {
+    font-size: 17px;
   }
   /* Yüksek kontrast modu */
   html.hc {
@@ -79,9 +84,15 @@
     color: var(--color-fener-bg);
   }
   .small-btn {
-    @apply rounded-xl px-3 py-3 text-sm font-semibold text-center flex flex-col items-center gap-1 flex-1;
+    @apply rounded-xl px-3 py-3 text-base font-semibold text-center flex flex-col items-center gap-1 flex-1 min-h-[64px];
     background: var(--color-fener-card);
     border: 1px solid var(--color-fener-border);
     color: var(--color-fener-cream);
+  }
+  .tap {
+    @apply min-h-[48px] min-w-[48px];
+  }
+  .section-title {
+    @apply text-xs uppercase tracking-wider opacity-60 font-semibold px-1;
   }
 }

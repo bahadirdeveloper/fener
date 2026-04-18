@@ -87,47 +87,60 @@ export default function Home() {
 
       <QuickDial />
 
-      <div className="grid grid-cols-3 gap-2 mt-2">
-        {[
+      {[
+        { title: 'Şimdi lazım', items: [
           ['/harita', '🗺️', t('home.map')],
-          ['/aile', '👨‍👩‍👧', t('home.family')],
-          ['/rapor', '🚩', t('home.report')],
-          ['/rehber', '📖', t('home.guide')],
-          ['/pusula', '🧭', t('home.compass')],
           ['/ilkyardim', '🚑', t('home.firstAid')],
-          ['/dudluk', '📢', t('home.whistle')],
+          ['/aile', '👨‍👩‍👧', t('home.family')],
+          ['/rapor', '🚩', t('home.report')]
+        ]},
+        { title: 'SOS sinyalleri', items: [
           ['/sessiz-sos', '🆘', t('home.silentSos')],
           ['/isik', '🔦', t('home.flash')],
+          ['/dudluk', '📢', t('home.whistle')],
+          ['/ble', '📡', t('home.near')]
+        ]},
+        { title: 'Araçlar', items: [
+          ['/pusula', '🧭', t('home.compass')],
           ['/ses', '🎙️', t('home.voice')],
           ['/oku', '📷', t('home.scan')],
-          ['/alfabe', '📻', t('home.alphabet')],
+          ['/alfabe', '📻', t('home.alphabet')]
+        ]},
+        { title: 'Hazırlık', items: [
+          ['/rehber', '📖', t('home.guide')],
+          ['/hazirlik', '🎒', t('home.kit')],
           ['/noktalarim', '⭐', t('home.points')],
-          ['/giden', '📤', t('home.outbox')],
-          ['/ble', '📡', t('home.near')],
-          ['/hazirlik', '🎒', t('home.kit')]
-        ].map(([to, emoji, label]) => (
-          <Link key={to} to={to} className="small-btn min-h-[4.5rem] relative">
-            <span className="text-2xl" aria-hidden>{emoji}</span>
-            <span>{label}</span>
-            {to === '/hazirlik' && kit > 0 && (
-              <span
-                className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[--color-fener-gold] text-[--color-fener-bg] font-bold"
-                aria-label={`Hazırlık yüzde ${kit}`}
-              >
-                %{kit}
-              </span>
-            )}
-            {to === '/rapor' && recentReports > 0 && (
-              <span
-                className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[--color-fener-help] text-white font-bold"
-                aria-label={`Son 24 saatte ${recentReports} rapor`}
-              >
-                {recentReports}
-              </span>
-            )}
-          </Link>
-        ))}
-      </div>
+          ['/giden', '📤', t('home.outbox')]
+        ]}
+      ].map(({ title, items }) => (
+        <div key={title} className="flex flex-col gap-2 mt-1">
+          <h2 className="section-title">{title}</h2>
+          <div className="grid grid-cols-4 gap-2">
+            {items.map(([to, emoji, label]) => (
+              <Link key={to} to={to} className="small-btn relative">
+                <span className="text-2xl" aria-hidden>{emoji}</span>
+                <span className="text-[13px] leading-tight">{label}</span>
+                {to === '/hazirlik' && kit > 0 && (
+                  <span
+                    className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[--color-fener-gold] text-[--color-fener-bg] font-bold"
+                    aria-label={`Hazırlık yüzde ${kit}`}
+                  >
+                    %{kit}
+                  </span>
+                )}
+                {to === '/rapor' && recentReports > 0 && (
+                  <span
+                    className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[--color-fener-help] text-white font-bold"
+                    aria-label={`Son 24 saatte ${recentReports} rapor`}
+                  >
+                    {recentReports}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
