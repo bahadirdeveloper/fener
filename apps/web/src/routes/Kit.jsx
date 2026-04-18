@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-
-const KEY = 'fener.kit.v1'
+import { KIT_KEY as KEY, readKit } from '../lib/kit.js'
 
 const SECTIONS = [
   {
@@ -42,15 +41,12 @@ const SECTIONS = [
   }
 ]
 
-function load() {
-  try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} }
-}
 function save(s) {
   try { localStorage.setItem(KEY, JSON.stringify(s)) } catch { /* noop */ }
 }
 
 export default function Kit() {
-  const [state, setState] = useState(() => load())
+  const [state, setState] = useState(() => readKit())
 
   useEffect(() => { save(state) }, [state])
 
