@@ -23,7 +23,8 @@
     "alphabet": "Alphabet",
     "points": "Points",
     "outbox": "Outbox",
-    "near": "Nearby"
+    "near": "Nearby",
+    "kit": "Kit"
   },
   "status": {
     "online": "Online",

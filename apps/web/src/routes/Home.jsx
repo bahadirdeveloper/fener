@@ -75,7 +75,8 @@ export default function Home() {
           ['/alfabe', '📻', t('home.alphabet')],
           ['/noktalarim', '⭐', t('home.points')],
           ['/giden', '📤', t('home.outbox')],
-          ['/ble', '📡', t('home.near')]
+          ['/ble', '📡', t('home.near')],
+          ['/hazirlik', '🎒', t('home.kit')]
         ].map(([to, emoji, label]) => (
           <Link key={to} to={to} className="small-btn min-h-[4.5rem]">
             <span className="text-2xl" aria-hidden>{emoji}</span>

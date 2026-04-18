@@ -19,6 +19,7 @@ const Alphabet = lazy(() => import('./routes/Alphabet.jsx'))
 const Flash = lazy(() => import('./routes/Flash.jsx'))
 const FirstAid = lazy(() => import('./routes/FirstAid.jsx'))
 const Compass = lazy(() => import('./routes/Compass.jsx'))
+const Kit = lazy(() => import('./routes/Kit.jsx'))
 const Ble = lazy(() => import('./routes/Ble.jsx'))
 import Layout from './components/Layout.jsx'
 import Onboarding from './components/Onboarding.jsx'
@@ -66,6 +67,7 @@ export default function App() {
         <Route path="/isik" element={<Suspense fallback={<Loading />}><Flash /></Suspense>} />
         <Route path="/ilkyardim" element={<Suspense fallback={<Loading />}><FirstAid /></Suspense>} />
         <Route path="/pusula" element={<Suspense fallback={<Loading />}><Compass /></Suspense>} />
+        <Route path="/hazirlik" element={<Suspense fallback={<Loading />}><Kit /></Suspense>} />
         <Route path="/ble" element={<Suspense fallback={<Loading />}><Ble /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
