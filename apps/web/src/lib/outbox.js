@@ -1,16 +1,8 @@
 import { pushOutbox, markOutboxSent, listFamily, db } from './db.js'
+import { normalizeTrPhone } from './phone.js'
 
 const WHATSAPP_BASE = 'https://wa.me/'
 const SMS_BASE = 'sms:'
-
-function normalizePhone(raw) {
-  if (!raw) return ''
-  const digits = raw.replace(/\D+/g, '')
-  if (digits.startsWith('90')) return digits
-  if (digits.startsWith('0')) return '90' + digits.slice(1)
-  if (digits.length === 10) return '90' + digits
-  return digits
-}
 
 export function buildStatusText({ type, name, lat, lng }) {
   const who = name ? `${name}: ` : ''
@@ -25,11 +17,11 @@ export function buildStatusText({ type, name, lat, lng }) {
 }
 
 export function whatsappLink(phone, text) {
-  return `${WHATSAPP_BASE}${normalizePhone(phone)}?text=${encodeURIComponent(text)}`
+  return `${WHATSAPP_BASE}${normalizeTrPhone(phone)}?text=${encodeURIComponent(text)}`
 }
 
 export function smsLink(phone, text) {
-  return `${SMS_BASE}${normalizePhone(phone)}?body=${encodeURIComponent(text)}`
+  return `${SMS_BASE}${normalizeTrPhone(phone)}?body=${encodeURIComponent(text)}`
 }
 
 export async function queueStatus({ type, lat, lng, name }) {
