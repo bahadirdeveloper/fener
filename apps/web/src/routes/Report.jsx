@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, pushOutbox } from '../lib/db.js'
-import { getPosition } from '../lib/location.js'
+import { getPosition, getLastKnownPosition } from '../lib/location.js'
 import { signMessage } from '../lib/sign.js'
 
 const KINDS = [
@@ -12,6 +12,7 @@ const KINDS = [
   { id: 'flood', label: 'Sel / su', emoji: '🌊', color: '#2A8FD6' },
   { id: 'blocked', label: 'Yol kapalı', emoji: '🚧', color: '#E0A02A' },
   { id: 'safe', label: 'Güvenli alan', emoji: '✅', color: '#2F9E44' },
+  { id: 'quake', label: 'Sarsıntı hissettim', emoji: '📳', color: '#8C5AD6' },
   { id: 'other', label: 'Diğer', emoji: '❕', color: '#C4A882' }
 ]
 
@@ -28,7 +29,13 @@ export default function Report() {
     setErr('')
     setBusy(true)
     try {
-      const pos = await getPosition({ timeout: 8000 })
+      let pos
+      try { pos = await getPosition({ timeout: 8000 }) } catch (e) {
+        const last = getLastKnownPosition()
+        if (!last) throw e
+        pos = last
+        setErr('Canlı konum yok; son bilinen nokta kullanıldı.')
+      }
       const row = {
         kind,
         note: note.trim(),
