@@ -112,19 +112,45 @@ export default function Points() {
         </button>
       </form>
 
-      <label className="rounded-lg p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm font-semibold text-center cursor-pointer">
-        📥 GeoJSON dosyasından içe aktar
-        <input
-          type="file"
-          accept=".geojson,application/geo+json,application/json"
-          hidden
-          onChange={(e) => {
-            const f = e.target.files?.[0]
-            if (f) importGeoJson(f)
-            e.target.value = ''
+      <div className="grid grid-cols-2 gap-2">
+        <label className="rounded-lg p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm font-semibold text-center cursor-pointer">
+          📥 İçe aktar
+          <input
+            type="file"
+            accept=".geojson,application/geo+json,application/json"
+            hidden
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) importGeoJson(f)
+              e.target.value = ''
+            }}
+          />
+        </label>
+        <button
+          type="button"
+          disabled={points.length === 0}
+          onClick={() => {
+            const geo = {
+              type: 'FeatureCollection',
+              features: points.map((p) => ({
+                type: 'Feature',
+                geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
+                properties: { name: p.name, kind: p.kind }
+              }))
+            }
+            const blob = new Blob([JSON.stringify(geo, null, 2)], { type: 'application/geo+json' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `fener-noktalarim-${new Date().toISOString().slice(0, 10)}.geojson`
+            a.click()
+            URL.revokeObjectURL(url)
           }}
-        />
-      </label>
+          className="rounded-lg p-3 bg-[--color-fener-card] border border-[--color-fener-border] text-sm font-semibold disabled:opacity-50"
+        >
+          💾 Dışa aktar
+        </button>
+      </div>
 
       <ul className="flex flex-col gap-2">
         {points.map((p) => {
