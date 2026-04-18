@@ -4,7 +4,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { osmRasterStyle } from '../lib/mapStyle.js'
 import { SHELTERS, SILIFKE_CENTER, nearestShelter, haversineKm } from '../data/shelters.js'
-import { HAZARDS } from '../data/hazards.js'
+import { HAZARDS, hazardAt } from '../data/hazards.js'
 import { getPosition } from '../lib/location.js'
 import { db } from '../lib/db.js'
 
@@ -15,6 +15,7 @@ export default function Map() {
   const [selected, setSelected] = useState(null)
   const [userLoc, setUserLoc] = useState(null)
   const [locError, setLocError] = useState('')
+  const [hazardWarn, setHazardWarn] = useState(null)
   const [filters, setFilters] = useState({ shelters: true, hazards: true, reports: true, user: true })
   const userPoints = useLiveQuery(() => db.meetingPoints.toArray(), []) ?? []
   const reports = useLiveQuery(() => db.reports.toArray(), []) ?? []
@@ -344,6 +345,7 @@ export default function Map() {
         .setLngLat(lngLat)
         .addTo(map)
 
+      setHazardWarn(hazardAt(lngLat))
       const near = nearestShelter(lngLat)
       map.fitBounds(
         [lngLat, near.feature.geometry.coordinates],
@@ -397,6 +399,13 @@ export default function Map() {
       {locError && (
         <div className="text-xs text-[--color-fener-help] rounded-lg p-2 border border-[--color-fener-help]/40">
           {locError}
+        </div>
+      )}
+
+      {hazardWarn && (
+        <div className="rounded-xl p-3 bg-[--color-fener-help]/10 border border-[--color-fener-help] text-sm">
+          ⚠️ Şu an <strong>{hazardWarn.properties.name}</strong> sınırı içindesin
+          ({hazardWarn.properties.severity}). Toplanma noktasına yönel.
         </div>
       )}
 
