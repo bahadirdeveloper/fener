@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../lib/db.js'
+import { normalizeTrPhone } from '../lib/phone.js'
 
 const RELATIONS = ['Eş', 'Anne', 'Baba', 'Kardeş', 'Çocuk', 'Akraba', 'Arkadaş', 'Komşu', 'Diğer']
 
@@ -62,7 +63,7 @@ export default function Family() {
         {family.map((m) => {
           const phone = (m.phone || '').replace(/\s+/g, '')
           const msg = encodeURIComponent('Ben iyiyim. — Fener')
-          const waPhone = phone.replace(/^0/, '90').replace(/[^0-9+]/g, '')
+          const waPhone = normalizeTrPhone(phone)
           return (
             <li key={m.id} className="flex flex-col gap-2 rounded-xl p-3 bg-[--color-fener-card] border border-[--color-fener-border]">
               <div className="flex items-center gap-3">
