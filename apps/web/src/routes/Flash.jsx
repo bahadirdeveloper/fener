@@ -15,24 +15,53 @@ export default function Flash() {
   const { t } = useTranslation()
   const [on, setOn] = useState(false)
   const [active, setActive] = useState(false)
+  const [mode, setMode] = useState('screen')
+  const [torchErr, setTorchErr] = useState('')
   const timers = useRef([])
+  const trackRef = useRef(null)
 
   useEffect(() => () => {
     stop()
   }, [])
 
-  async function start() {
+  async function startScreen() {
+    setMode('screen')
     await acquireWakeLock()
     setActive(true)
     loop(0)
   }
 
+  async function startTorch() {
+    setTorchErr('')
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      })
+      const track = stream.getVideoTracks()[0]
+      const caps = track.getCapabilities?.() || {}
+      if (!caps.torch) {
+        track.stop()
+        throw new Error('Bu cihazda torch desteklenmiyor — ekran modu kullan.')
+      }
+      trackRef.current = track
+      setMode('torch')
+      await acquireWakeLock()
+      setActive(true)
+      loop(0)
+    } catch (e) {
+      setTorchErr(e.message || 'Torch açılamadı')
+    }
+  }
+
   function loop(i) {
     if (i >= PATTERN.length) i = 0
-    const litIndex = i % 2 === 0
-    setOn(litIndex)
-    const t = setTimeout(() => loop(i + 1), PATTERN[i])
-    timers.current.push(t)
+    const lit = i % 2 === 0
+    setOn(lit)
+    if (trackRef.current) {
+      trackRef.current.applyConstraints({ advanced: [{ torch: lit }] }).catch(() => {})
+    }
+    const tm = setTimeout(() => loop(i + 1), PATTERN[i])
+    timers.current.push(tm)
   }
 
   function stop() {
@@ -41,9 +70,14 @@ export default function Flash() {
     setOn(false)
     setActive(false)
     releaseWakeLock()
+    if (trackRef.current) {
+      try { trackRef.current.applyConstraints({ advanced: [{ torch: false }] }) } catch { /* noop */ }
+      try { trackRef.current.stop() } catch { /* noop */ }
+      trackRef.current = null
+    }
   }
 
-  if (active) {
+  if (active && mode === 'screen') {
     return (
       <div
         onClick={stop}
@@ -58,21 +92,43 @@ export default function Flash() {
     )
   }
 
+  if (active && mode === 'torch') {
+    return (
+      <div className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center gap-6">
+        <div className="text-6xl">{on ? '🔦' : '·'}</div>
+        <div className="text-[--color-fener-gold] font-mono">TORCH SOS</div>
+        <button
+          onClick={stop}
+          className="rounded-xl px-6 py-3 bg-[--color-fener-help] text-white font-bold"
+        >
+          DURDUR
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">{t('page.flash')}</h2>
       <p className="text-sm opacity-80">
-        Ekran Mors alfabesinde SOS yanıp söner. Karanlıkta arama kurtarma için yardımcı olur.
+        Mors alfabesinde SOS sinyali yanıp söner. Gece 400–500 m mesafeden görülebilir.
       </p>
       <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-xs opacity-80">
-        İpucu: telefonu yüzü yukarı bakacak şekilde görülebilir bir yere koy. Parlaklığı maksimuma al.
+        İpucu: telefonu görülebilir bir yere koy. Torch modunda pil daha hızlı biter; ekran modu alternatif.
       </div>
       <button
-        onClick={start}
+        onClick={startTorch}
         className="rounded-2xl p-6 bg-[--color-fener-gold] text-[--color-fener-bg] font-extrabold text-xl"
       >
-        🔦 IŞIKLI SOS'U BAŞLAT
+        🔦 KAMERA IŞIĞI (TORCH) · SOS
       </button>
+      <button
+        onClick={startScreen}
+        className="rounded-2xl p-5 bg-[--color-fener-card] border border-[--color-fener-gold] text-[--color-fener-cream] font-bold"
+      >
+        💡 EKRAN IŞIĞI · SOS
+      </button>
+      {torchErr && <div className="text-sm text-[--color-fener-help]">{torchErr}</div>}
     </div>
   )
 }
