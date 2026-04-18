@@ -1,15 +1,28 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { haptic } from '../lib/prefs.js'
 import QuickDial from '../components/QuickDial.jsx'
 import { startBeacon } from '../lib/beacon.js'
 
+function kitPct() {
+  try {
+    const raw = localStorage.getItem('fener.kit.v1')
+    if (!raw) return 0
+    const s = JSON.parse(raw)
+    const TOTAL = 22
+    const done = Object.values(s).filter(Boolean).length
+    return Math.min(100, Math.round((done / TOTAL) * 100))
+  } catch { return 0 }
+}
+
 export default function Home() {
   const nav = useNavigate()
   const { t } = useTranslation()
   const pressTimer = useRef(null)
   const longFired = useRef(false)
+  const [kit, setKit] = useState(0)
+  useEffect(() => { setKit(kitPct()) }, [])
 
   function onHelpDown() {
     longFired.current = false
@@ -78,9 +91,17 @@ export default function Home() {
           ['/ble', '📡', t('home.near')],
           ['/hazirlik', '🎒', t('home.kit')]
         ].map(([to, emoji, label]) => (
-          <Link key={to} to={to} className="small-btn min-h-[4.5rem]">
+          <Link key={to} to={to} className="small-btn min-h-[4.5rem] relative">
             <span className="text-2xl" aria-hidden>{emoji}</span>
             <span>{label}</span>
+            {to === '/hazirlik' && kit > 0 && (
+              <span
+                className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded-full bg-[--color-fener-gold] text-[--color-fener-bg] font-bold"
+                aria-label={`Hazırlık yüzde ${kit}`}
+              >
+                %{kit}
+              </span>
+            )}
           </Link>
         ))}
       </div>
