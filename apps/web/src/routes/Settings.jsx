@@ -59,6 +59,8 @@ export default function Settings() {
 
       <InstallButton />
 
+      <Group emoji="👁️" title="Görünüm" />
+
       <Section title="Yazı boyutu">
         <div className="grid grid-cols-4 gap-2">
           {SCALES.map((s) => (
@@ -75,7 +77,7 @@ export default function Settings() {
 
       <Section title="Yüksek kontrast">
         <label className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[--color-fener-card] border border-[--color-fener-border]">
-          <span className="text-sm">Siyah-beyaz yüksek kontrast mod</span>
+          <span className="text-base">Siyah-beyaz yüksek kontrast</span>
           <input
             type="checkbox"
             checked={hc}
@@ -105,8 +107,8 @@ export default function Settings() {
 
       <Section title="Enerji tasarrufu">
         <label className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[--color-fener-card] border border-[--color-fener-border]">
-          <span className="text-sm">
-            Animasyonları ve titreşimi kapat, daha koyu arka plan. Pil uzar.
+          <span className="text-base">
+            Animasyon ve titreşimi kapat, arka planı kararsın. Pil uzar.
           </span>
           <input
             type="checkbox"
@@ -117,9 +119,7 @@ export default function Settings() {
         </label>
       </Section>
 
-      <Section title="Kendini test et">
-        <SelfTest />
-      </Section>
+      <Group emoji="📶" title="Offline & bildirim" />
 
       <Section title="Bildirimler">
         <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-sm flex flex-col gap-2">
@@ -180,6 +180,12 @@ export default function Settings() {
         </div>
       </Section>
 
+      <Group emoji="🔐" title="Güvenlik & test" />
+
+      <Section title="Kendini test et">
+        <SelfTest />
+      </Section>
+
       <Section title="Kimlik (imzalı mesaj)">
         <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-sm flex flex-col gap-3">
           {identity ? (
@@ -209,6 +215,8 @@ export default function Settings() {
           )}
         </div>
       </Section>
+
+      <Group emoji="💾" title="Veri" />
 
       <Section title="Yedek">
         <div className="flex flex-col gap-2">
@@ -251,6 +259,8 @@ export default function Settings() {
           {t('footer') /* noop i18n guard */}
         </div>
       </Section>
+
+      <Group emoji="ℹ️" title="Bilgi" />
 
       <Section title="Hakkında">
         <div className="rounded-xl p-4 bg-[--color-fener-card] border border-[--color-fener-border] text-sm flex flex-col gap-2">
@@ -341,6 +351,15 @@ function Section({ title, children }) {
     <div className="flex flex-col gap-2">
       <h3 className="text-sm uppercase tracking-wider opacity-70">{title}</h3>
       {children}
+    </div>
+  )
+}
+
+function Group({ emoji, title }) {
+  return (
+    <div className="flex items-center gap-2 pt-4 pb-1 border-t border-[--color-fener-border]">
+      <span className="text-2xl" aria-hidden>{emoji}</span>
+      <h2 className="text-lg font-bold">{title}</h2>
     </div>
   )
 }
